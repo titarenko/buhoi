@@ -8,5 +8,37 @@
     "type": "git"
   },
   "author": "Constantin Titarenko <constantin.titarenko@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.4.7"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "coveralls": "^2.11.16",
+    "eslint": "^3.15.0",
+    "eslint-plugin-func-call": "^1.0.3",
+    "eslint-plugin-html": "^2.0.0",
+    "eslint-plugin-react": "^6.9.0",
+    "eslint-plugin-require-path-exists": "^1.1.5",
+    "husky": "^0.13.1",
+    "istanbul": "^0.4.5",
+    "lint-staged": "^3.3.0",
+    "mocha": "^3.2.0",
+    "should": "^11.2.0",
+    "should-sinon": "^0.0.5",
+    "sinon": "^1.17.7"
+  },
+  "scripts": {
+    "test": "istanbul cover _mocha -- --recursive tests",
+    "test-on-travis": "istanbul cover _mocha -- --recursive tests && cat ./coverage/lcov.info | coveralls",
+    "lint": "eslint . --ext .js,.jsx,.html --ignore-path .gitignore",
+    "precommit": "lint-staged",
+    "prepush": "npm run lint"
+  },
+  "babel": {},
+  "lint-staged": {
+    "*.js": "eslint",
+    "*.jsx": "eslint"
+  }
 }
