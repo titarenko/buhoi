@@ -11,7 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "bluebird": "^3.4.7"
+    "bluebird": "^3.4.7",
+    "colors": "^1.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

@@ -21,6 +21,8 @@ module.exports = {
 
 		describe: true,
 		it: true,
+		beforeEach: true,
+		afterEach: true,
 	},
 	extends: ['eslint:recommended', 'plugin:react/recommended'],
 	rules: {
