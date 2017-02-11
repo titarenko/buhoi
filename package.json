@@ -1,0 +1,12 @@
+{
+  "name": "buhoi",
+  "version": "1.0.0",
+  "description": "This framework is so simple, that even drunk people can produce typical admin web apps quickly by using it.",
+  "main": "index.js",
+  "repository": {
+    "url": "git@github.com:titarenko/buhoi.git",
+    "type": "git"
+  },
+  "author": "Constantin Titarenko <constantin.titarenko@gmail.com>",
+  "license": "MIT"
+}
