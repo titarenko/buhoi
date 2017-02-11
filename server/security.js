@@ -50,17 +50,17 @@ function verifyPassword (password, hash) {
 }
 
 function NotAuthenticatedError () {
-	Error.call(this)
-	Error.captureStackTrace(this, NotAuthenticatedError)
 	this.message = 'not authenticated'
+	Error.call(this, this.message)
+	Error.captureStackTrace(this, NotAuthenticatedError)
 }
 
 util.inherits(NotAuthenticatedError, Error)
 
 function NotAuthorizedError () {
-	Error.call(this)
-	Error.captureStackTrace(this, NotAuthorizedError)
 	this.message = 'not authorized'
+	Error.call(this, this.message)
+	Error.captureStackTrace(this, NotAuthorizedError)
 }
 
 util.inherits(NotAuthorizedError, Error)
