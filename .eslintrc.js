@@ -1,13 +1,6 @@
 module.exports = {
-	parser: 'babel-eslint',
-	parserOptions: { ecmaFeatures: { jsx: true } },
+	parserOptions: { ecmaVersion: 6 },
 	globals: {
-		window: true,
-		document: true,
-		location: true,
-		confirm: true,
-		localStorage: true,
-
 		require: true,
 		module: true,
 		process: true,
@@ -24,7 +17,7 @@ module.exports = {
 		beforeEach: true,
 		afterEach: true,
 	},
-	extends: ['eslint:recommended', 'plugin:react/recommended'],
+	extends: ['eslint:recommended'],
 	rules: {
 		'strict': 0,
 		'no-undef': 'error',
@@ -59,16 +52,10 @@ module.exports = {
 		'require-path-exists/tooManyArguments': 2,
 		'require-path-exists/exists': [2, { extensions: ['', '.js', '.jsx'] }],
 		'func-call/opening-newline': ['error', 1],
-		'react/react-in-jsx-scope': 'off',
-		'react/jsx-space-before-closing': [2, 'always'],
 		'jsx-quotes': [2, 'prefer-double'],
-		'react/prop-types': 'off',
-		'react/display-name': 'off',
 	},
 	plugins: [
 		'require-path-exists',
-		'html',
 		'func-call',
-		'react',
 	],
 }

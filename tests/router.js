@@ -1,4 +1,4 @@
-const router = require('../../server/router')
+const router = require('../modules/router')
 const sinon = require('sinon')
 const fs = require('fs')
 const mockRequire = require('mock-require')
@@ -8,7 +8,7 @@ const shouldSinon_ = require('should-sinon')
 const express = require('express')
 const bodyParser = require('body-parser')
 const korrekt = require('korrekt')
-const security = require('../../server/security')
+const security = require('../modules/security')
 
 describe('router', function () {
 	const projects = {

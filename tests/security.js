@@ -1,7 +1,7 @@
 const should_ = require('should')
 const sinon = require('sinon')
 const shouldSinon_ = require('should-sinon')
-const security = require('../../server/security')
+const security = require('../modules/security')
 
 describe('security', function () {
 	describe('NotAuthenticatedError', function () {
