@@ -99,14 +99,13 @@ function createHandler (basePath, entities, spec, customErrorHandler) {
 					return
 				}
 
-				const ctrl = require(path.join(basePath, entity, 'ctrl'))
+				const ctrl = safeRequire(path.join(basePath, entity, 'ctrl'))
 
-				if (typeof ctrl[action] != 'function') {
+				if (!ctrl || typeof ctrl[action] != 'function') {
 					log.warn(`${req.ip} asked for ${entity}.${action}, but it is not implemented`)
 					res.status(501).end()
 					return
 				}
-
 				return ctrl[action].call({ user: req.user }, params, req, res)
 			})
 			.then(result => {
@@ -128,5 +127,17 @@ function createHandler (basePath, entities, spec, customErrorHandler) {
 				log.error(`${req.ip} called ${entity}.${action} and it failed due to ${error.stack}`)
 				res.status(500).end()
 			})
+	}
+}
+
+function safeRequire (path) {
+	try {
+		return require(path)
+	} catch (e) {
+		if (e.message.startsWith(`Cannot find module '${path}'`)) {
+			return null
+		} else {
+			throw e
+		}
 	}
 }
