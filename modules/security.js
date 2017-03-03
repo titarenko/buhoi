@@ -1,6 +1,7 @@
 const Promise = require('bluebird')
 const util = require('util')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
 	bypass: buildFilter({ requireAuthentication: false }),
@@ -9,6 +10,9 @@ module.exports = {
 
 	hashPassword,
 	verifyPassword,
+
+	serialize: jwt.sign,
+	deserialize,
 
 	NotAuthenticatedError,
 	NotAuthorizedError,
@@ -47,6 +51,14 @@ function hashPassword (password) {
 
 function verifyPassword (password, hash) {
 	return bcrypt.compareSync(password, hash)
+}
+
+function deserialize (token, secret) {
+	try {
+		return jwt.verify(token, secret)
+	} catch (e) {
+		return null
+	}
 }
 
 function NotAuthenticatedError () {
