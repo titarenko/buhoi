@@ -2,9 +2,10 @@ const Promise = require('bluebird')
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
-const korrekt = require('korrekt')
 
+const validation = require('./validation')
 const security = require('./security')
+
 const log = require('./log')(__filename)
 
 const rethrower = error => { throw error }
@@ -119,7 +120,7 @@ function createHandler (basePath, entities, spec, customErrorHandler) {
 					res.status(status).end()
 				}
 			})
-			.catch(korrekt.ValidationError, error => res.status(400).json(error.fields))
+			.catch(validation.ValidationError, error => res.status(400).json(error.fields))
 			.catch(security.NotAuthenticatedError, error_ => res.status(401).end())
 			.catch(security.NotAuthorizedError, error_ => res.status(403).end())
 			.catch(customErrorHandler)
