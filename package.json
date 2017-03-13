@@ -16,9 +16,8 @@
     "eslint": "^3.5.0",
     "eslint-plugin-func-call": "^1.0.3",
     "eslint-plugin-require-path-exists": "^1.1.5",
-    "http-shutdown": "^1.1.0",
+    "http-shutdown": "^1.2.0",
     "jsonwebtoken": "^7.3.0",
-    "korrekt": "1.2.3",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
@@ -44,5 +43,8 @@
   },
   "lint-staged": {
     "*.js": "eslint"
+  },
+  "peerDependencies": {
+    "korrekt": "^1.2.3"
   }
 }
