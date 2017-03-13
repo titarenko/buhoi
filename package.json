@@ -13,38 +13,43 @@
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.4.6",
     "colors": "^1.1.2",
-    "eslint": "^3.5.0",
-    "eslint-plugin-func-call": "^1.0.3",
-    "eslint-plugin-require-path-exists": "^1.1.5",
     "http-shutdown": "^1.2.0",
-    "jsonwebtoken": "^7.3.0",
+    "jsonwebtoken": "^7.3.0"
+  },
+  "peerDependencies": {
+    "korrekt": "^1.2.3",
+    "request": "^2.81.0",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
     "body-parser": "^1.16.1",
     "coveralls": "^2.11.16",
+    "eslint": "^3.5.0",
+    "eslint-plugin-func-call": "^1.0.3",
+    "eslint-plugin-require-path-exists": "^1.1.5",
     "express": "^4.14.1",
     "husky": "^0.13.1",
     "istanbul": "^0.4.5",
+    "korrekt": "^1.2.3",
     "lint-staged": "^3.3.0",
     "mocha": "^3.2.0",
     "mock-require": "^2.0.1",
+    "request": "^2.81.0",
     "should": "^11.2.0",
     "should-sinon": "^0.0.5",
     "sinon": "^1.17.7",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "webpack": "^2.2.1"
   },
   "scripts": {
     "test": "istanbul cover _mocha -- --recursive tests",
     "test-on-travis": "istanbul cover _mocha -- --recursive tests && cat ./coverage/lcov.info | coveralls",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "precommit": "lint-staged",
-    "prepush": "npm run lint"
+    "prepush": "npm run lint",
+    "release": "npm run lint && npm run test && npm version patch && npm publish && git push"
   },
   "lint-staged": {
     "*.js": "eslint"
-  },
-  "peerDependencies": {
-    "korrekt": "^1.2.3"
   }
 }
