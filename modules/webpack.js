@@ -1,47 +1,53 @@
 const webpack = require('webpack')
 
-const isDevelopment = !['production', 'staging'].includes(process.env.NODE_ENV)
+module.exports = function (config) {
+	if (typeof config == 'string') {
+		const staticPath = `${config}/static`
+		return create({
+			entry: `${config}/client.js`,
+			output: {
+				path: staticPath,
+				filename: 'bundle.js',
+			},
+			contentBase: staticPath,
+		})
+	} else {
+		return create(config)
+	}
+}
 
-module.exports = create
-
-function create ({ entryPath, outputPath }) {
+function create ({ entry, output, contentBase }) {
 	return {
-		entry: entryPath,
-		output: {
-			path: outputPath,
-			filename: 'bundle.js',
-		},
+		entry,
+		output,
+		resolve: { extensions: ['.js', '.jsx'] },
 		module: {
 			rules: [
 				{
 					test: /\.jsx?$/,
-					exclude: /node_modules/,
+					exclude: /(node_modules)|(buhoi-client)|(buhoi-ui)/,
 					use: {
 						loader: 'babel-loader',
 						options: {
-							plugins: ['inferno', 'syntax-jsx', 'transform-runtime'],
-							presets: ['es2015', 'stage-0', 'es2017'],
+							plugins: ['syntax-jsx', 'inferno'],
+							presets: ['stage-0', 'es2015'],
 						},
 					},
 				},
+				{
+					test: /\.scss$/,
+					use: ['style-loader', 'css-loader', 'sass-loader'],
+				},
 			],
 		},
-		resolve: { extensions: ['.js', '.jsx'] },
 		plugins: [
-			new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(isDevelopment ? '' : 'production') }),
 			new webpack.ProvidePlugin({ 'Inferno': 'inferno' }),
-		].concat(!isDevelopment ? [
-			new webpack.optimize.DedupePlugin(),
-			new webpack.optimize.AggressiveMergingPlugin(),
-			new webpack.optimize.UglifyJsPlugin({
-				compress: { warnings: false },
-				output: { comments: false },
-			}),
-		] : []),
+			new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
+			new webpack.optimize.UglifyJsPlugin(),
+		],
 		devtool: 'source-map',
 		devServer: {
-			hot: true,
-			contentBase: outputPath,
+			contentBase,
 			proxy: {
 				'/api/*': {
 					target: 'http://localhost:3000',
