@@ -53,8 +53,16 @@ module.exports = function ({ basePath, errorHandler = rethrower }) {
 	}))
 
 	router.post('/:entity', handler({
-		action: req => req.body.id ? 'update' : 'create',
+		action: req_ => 'create',
 		params: req => req.body,
+		status: (result, req) => req.body.id
+			? result ? 200 : 204
+			: result ? 201 : 204,
+	}))
+
+	router.post('/:entity/:id', handler({
+		action: req_ => 'update',
+		params: req => Object.assign({ id: req.params.id }, req.body),
 		status: (result, req) => req.body.id
 			? result ? 200 : 204
 			: result ? 201 : 204,

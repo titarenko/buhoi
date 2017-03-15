@@ -98,22 +98,22 @@ describe('router', function () {
 			.post('/issues')
 			.expect(201, { id: 105 })
 	})
-	it('should route POST request with id in body to "update" method', function () {
-		const attrs = { id: 1, name: '1' }
+	it('should route POST request with id in path to "update" method', function () {
+		const attrs = { id: '1', name: '1' }
 		return request
-			.post('/projects')
+			.post('/projects/1')
 			.send(attrs)
 			.expect(204)
 			.then(() => projects.update.should.be.calledWith(attrs))
 	})
 	it('should return 200 if "update" (via POST) returned non-empty result', function () {
 		return request
-			.post('/issues')
+			.post('/issues/101')
 			.send({ id: 101, name: 'too bad' })
 			.expect(200, { id: 101 })
 	})
 	it('should route PUT request with id in path to "update" method', function () {
-		const attrs = { id: 1, name: '1' }
+		const attrs = { id: '1', name: '1' }
 		return request
 			.put('/projects/1')
 			.send({ name: attrs.name })
