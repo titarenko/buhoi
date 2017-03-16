@@ -10,11 +10,15 @@ const log = require('./log')(__filename)
 
 const rethrower = error => { throw error }
 
-module.exports = function ({ basePath, errorHandler = rethrower }) {
+module.exports = function ({ pathResolver, basePath, errorHandler = rethrower }) {
 	const entities = fs.readdirSync(basePath)
 	const router = express.Router()
 
-	const handler = spec => createHandler(basePath, entities, spec, errorHandler)
+	if (!pathResolver) {
+		pathResolver = entity => path.join(basePath, entity, 'ctrl')
+	}
+
+	const handler = spec => createHandler(pathResolver, entities, spec, errorHandler)
 
 	router.get('/:entity.lookup', handler({
 		action: req_ => 'lookup',
@@ -93,7 +97,7 @@ function snakeCaseToCamelCase (name) {
 	return name.replace(/(\-\w)/g, m => m[1].toUpperCase())
 }
 
-function createHandler (basePath, entities, spec, customErrorHandler) {
+function createHandler (pathResolver, entities, spec, customErrorHandler) {
 	return function (req, res) {
 		let entity, action, params
 		Promise
@@ -108,7 +112,7 @@ function createHandler (basePath, entities, spec, customErrorHandler) {
 					return
 				}
 
-				const ctrl = safeRequire(path.join(basePath, entity, 'ctrl'))
+				const ctrl = safeRequire(pathResolver(entity))
 
 				if (!ctrl || typeof ctrl[action] != 'function') {
 					log.warn(`${req.ip} asked for ${entity}.${action}, but it is not implemented`)
