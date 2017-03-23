@@ -1,22 +1,18 @@
 const webpack = require('webpack')
 
 module.exports = function (config) {
-	if (typeof config == 'string') {
-		const staticPath = `${config}/static`
-		return create({
+	return typeof config != 'string'
+		? create(config)
+		: create({
 			entry: `${config}/client.js`,
 			output: {
-				path: staticPath,
+				path: `${config}/static`,
 				filename: 'bundle.js',
 			},
-			contentBase: staticPath,
 		})
-	} else {
-		return create(config)
-	}
 }
 
-function create ({ entry, output, contentBase }) {
+function create ({ entry, output }) {
 	return {
 		entry,
 		output,
@@ -43,18 +39,8 @@ function create ({ entry, output, contentBase }) {
 		plugins: [
 			new webpack.ProvidePlugin({ 'Inferno': 'inferno' }),
 			new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
-			new webpack.optimize.UglifyJsPlugin(),
 		],
 		devtool: 'source-map',
-		devServer: {
-			contentBase,
-			proxy: {
-				'/api/*': {
-					target: 'http://localhost:3000',
-					pathRewrite: { '^/api': '' },
-				},
-			},
-			historyApiFallback: true,
-		},
+		devServer: { '*': { target: 'http://localhost:3000' } },
 	}
 }
