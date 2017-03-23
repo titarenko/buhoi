@@ -5,26 +5,26 @@ const jwt = require('jsonwebtoken')
 
 module.exports = {
 	bypass: buildFilter({ requireAuthentication: false }),
-	allow: buildFilter({ filterType: 'role' }),
-	permit: buildFilter({ filterType: 'permission' }),
+	allow: buildFilter({ type: 'role' }),
+	permit: buildFilter({ type: 'permission' }),
 
 	hashPassword,
 	verifyPassword,
 
-	serialize: jwt.sign,
+	serialize,
 	deserialize,
 
 	NotAuthenticatedError,
 	NotAuthorizedError,
 }
 
-function buildFilter ({ requireAuthentication = true, filterType }) {
+function buildFilter ({ requireAuthentication = true, type }) {
 	return function () {
 		const args = Array.from(arguments)
 		const params = args.filter(it => typeof it != 'function')
 		const actions = args.filter(it => typeof it == 'function')
 
-		const isAuthorized = filterType == 'role'
+		const isAuthorized = type == 'role'
 			? user => params.length == 0 || params.some(it => user.roles.includes(it))
 			: user => params.length == 0 || params.every(it => user.permissions.includes(it))
 
@@ -53,9 +53,13 @@ function verifyPassword (password, hash) {
 	return bcrypt.compareSync(password, hash)
 }
 
+function serialize (payload, secret) {
+	return jwt.sign(payload, secret, { algorithm: 'HS256' })
+}
+
 function deserialize (token, secret) {
 	try {
-		return jwt.verify(token, secret)
+		return jwt.verify(token, secret, { algorithm: 'HS256' })
 	} catch (e) {
 		return null
 	}
