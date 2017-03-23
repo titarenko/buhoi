@@ -12,17 +12,17 @@
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.4.6",
-    "colors": "^1.1.2",
     "http-shutdown": "^1.2.0",
-    "jsonwebtoken": "^7.3.0"
+    "jsonwebtoken": "^7.3.0",
+    "korrekt": "^1.2.3",
+    "totlog": "^1.0.2"
   },
   "peerDependencies": {
-    "korrekt": "^1.2.3",
-    "request": "^2.81.0",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
     "body-parser": "^1.16.1",
+    "colors": "^1.1.2",
     "coveralls": "^2.11.16",
     "eslint": "^3.5.0",
     "eslint-plugin-func-call": "^1.0.3",
@@ -30,11 +30,9 @@
     "express": "^4.14.1",
     "husky": "^0.13.1",
     "istanbul": "^0.4.5",
-    "korrekt": "^1.2.3",
     "lint-staged": "^3.3.0",
     "mocha": "^3.2.0",
     "mock-require": "^2.0.1",
-    "request": "^2.81.0",
     "should": "^11.2.0",
     "should-sinon": "^0.0.5",
     "sinon": "^1.17.7",
