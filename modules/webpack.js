@@ -41,6 +41,6 @@ function create ({ entry, output }) {
 			new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
 		],
 		devtool: 'source-map',
-		devServer: { '*': { target: 'http://localhost:3000' } },
+		devServer: { proxy: { '*': { target: 'http://localhost:3000' } } },
 	}
 }
