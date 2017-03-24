@@ -31,6 +31,12 @@ function create ({ entry, output }) {
 					},
 				},
 				{
+					test: /\.js$/,
+					include: /buhoi/,
+					use: 'buhoi/source-map-loader',
+					enforce: 'pre',
+				},
+				{
 					test: /\.scss$/,
 					use: ['style-loader', 'css-loader', 'sass-loader'],
 				},

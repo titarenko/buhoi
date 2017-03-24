@@ -31,6 +31,7 @@
     "husky": "^0.13.1",
     "istanbul": "^0.4.5",
     "lint-staged": "^3.3.0",
+    "loader-utils": "^1.1.0",
     "mocha": "^3.2.0",
     "mock-require": "^2.0.1",
     "should": "^11.2.0",
