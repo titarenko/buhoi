@@ -33,5 +33,5 @@ function createHttpsServer (app, { letsencrypt }) {
 		dhparam: fs.readFileSync(path.join(letsencrypt, 'dh1.pem')),
 		secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2,
 	}
-	return httpShutdown(https.createServer(app, options))
+	return httpShutdown(https.createServer(options, app))
 }
