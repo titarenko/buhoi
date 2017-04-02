@@ -65,7 +65,7 @@ describe('router', function () {
 		}
 		return request
 			.get('/projects')
-			.query({ q: encodeURIComponent(JSON.stringify(query)) })
+			.query({ q: JSON.stringify(query) })
 			.expect(200)
 			.then(() => projects.list.should.be.calledWith(query))
 	})
@@ -154,7 +154,7 @@ describe('router', function () {
 	it('should route GET "lookup" request to "lookup" method', function () {
 		return request
 			.get('/projects.lookup')
-			.query({ q: encodeURIComponent(JSON.stringify({ 'id in': [1, 2, 3] })) })
+			.query({ q: JSON.stringify({ 'id in': [1, 2, 3] }) })
 			.expect(200)
 			.then(response => {
 				response.body.should.eql([{ id: 3, name: '3' }])

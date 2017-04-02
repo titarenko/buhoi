@@ -22,7 +22,7 @@ module.exports = function ({ pathResolver, basePath, errorHandler = rethrower })
 
 	router.get('/:entity.lookup', handler({
 		action: req_ => 'lookup',
-		params: req => req.query.q && JSON.parse(decodeURIComponent(req.query.q)),
+		params: req => req.query.q && JSON.parse(req.query.q),
 		status: result => result ? 200 : 404,
 	}))
 
@@ -46,7 +46,7 @@ module.exports = function ({ pathResolver, basePath, errorHandler = rethrower })
 
 	router.get('/:entity', handler({
 		action: req_ => 'list',
-		params: req => req.query.q && JSON.parse(decodeURIComponent(req.query.q)),
+		params: req => req.query.q && JSON.parse(req.query.q),
 		status: result => result ? 200 : 404,
 	}))
 
