@@ -46,7 +46,11 @@ function create ({ entry, output }) {
 			new webpack.ProvidePlugin({ 'Inferno': 'inferno' }),
 			new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
 		],
-		devtool: 'source-map',
-		devServer: { proxy: { '*': { target: 'http://localhost:3000' } } },
+		devtool: process.env.NODE_ENV == 'development' ? 'source-map' : undefined,
+		devServer: {
+			hot: true,
+			inline: true,
+			proxy: { '*': { target: 'http://localhost:3000' } },
+		},
 	}
 }
