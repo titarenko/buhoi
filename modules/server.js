@@ -11,6 +11,8 @@ module.exports = {
 	https: createHttpsServer,
 	createServer,
 	createProxy,
+	createHttpProxyApp,
+	createWsProxyApp,
 }
 
 function createHttpServer (app) {
@@ -56,8 +58,8 @@ function createServer (app, options) {
 }
 
 function createProxy (targets, options) {
-	const proxy = httpProxy.createProxyServer()
-
+	const proxyHttp = createHttpProxyApp(targets)
+	const proxyWs = createWsProxyApp(targets)
 	if (options) {
 		const http = createHttpServer({ redirectToHttps: true })
 		const https = createHttpsServer(proxyHttp, options)
@@ -73,8 +75,11 @@ function createProxy (targets, options) {
 		process.on('SIGINT', () => http.shutdown())
 		return { http, https: null }
 	}
+}
 
-	function proxyHttp (req, res) {
+function createHttpProxyApp (targets) {
+	const proxy = httpProxy.createProxyServer()
+	return function proxyHttp (req, res) {
 		const target = getProxyTarget(targets, req)
 		if (target) {
 			proxy.web(req, res, { target })
@@ -82,8 +87,11 @@ function createProxy (targets, options) {
 			res.sendStatus(404)
 		}
 	}
+}
 
-	function proxyWs (req, socket, head) {
+function createWsProxyApp (targets) {
+	const proxy = httpProxy.createProxyServer()
+	return function proxyWs (req, socket, head) {
 		const target = getProxyTarget(targets, req)
 		if (target) {
 			proxy.ws(req, socket, head, { target })
