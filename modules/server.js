@@ -32,10 +32,10 @@ function createHttpToHttpsServer () {
 
 function createHttpsServer (app, { letsencrypt }) {
 	const options = {
-		key: fs.readFileSync(path.join(letsencrypt, 'privkey1.pem')),
-		cert: fs.readFileSync(path.join(letsencrypt, 'fullchain1.pem')),
-		ca: fs.readFileSync(path.join(letsencrypt, 'chain1.pem')),
-		dhparam: fs.readFileSync(path.join(letsencrypt, 'dh1.pem')),
+		key: fs.readFileSync(path.join(letsencrypt, 'privkey.pem')),
+		cert: fs.readFileSync(path.join(letsencrypt, 'fullchain.pem')),
+		ca: fs.readFileSync(path.join(letsencrypt, 'chain.pem')),
+		dhparam: fs.readFileSync(path.join(letsencrypt, 'dh.pem')),
 		secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2,
 	}
 	return httpShutdown(https.createServer(options, app))
