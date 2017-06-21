@@ -78,6 +78,12 @@ module.exports = function ({ pathResolver, basePath, errorHandler = rethrower })
 		status: result => result ? 200 : 204,
 	}))
 
+	router.put('/:entity.:procedure', handler({
+		action: req => snakeCaseToCamelCase(req.params.procedure),
+		params: req => req.body,
+		status: result => result ? 200 : 204,
+	}))
+
 	router.delete('/:entity/:id', handler({
 		action: req_ => 'remove',
 		params: req => req.params.id,
