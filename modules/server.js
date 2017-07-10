@@ -104,5 +104,5 @@ function createWsProxyApp (targets) {
 function getProxyTarget (targets, req) {
 	const host = req.headers['host']
 	const name = host.slice(0, host.indexOf('.'))
-	return targets[name] || targets.find(x => x.isDefault)
+	return targets[name] || Object.values(targets).find(x => x.isDefault)
 }
