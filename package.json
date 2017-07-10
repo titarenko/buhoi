@@ -1,6 +1,6 @@
 {
   "name": "buhoi",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "This framework is so simple, that even drunk people can produce typical admin web apps quickly by using it.",
   "main": "index.js",
   "repository": {
