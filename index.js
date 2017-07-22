@@ -1,4 +1,5 @@
 module.exports = {
+	jwt: require('./modules/jwt'),
 	log: require('./modules/log'),
 	router: require('./modules/router'),
 	security: require('./modules/security'),

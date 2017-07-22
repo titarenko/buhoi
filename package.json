@@ -14,9 +14,9 @@
     "bluebird": "^3.4.6",
     "http-proxy": "^1.16.2",
     "http-shutdown": "^1.2.0",
-    "jsonwebtoken": "^7.3.0",
     "korrekt": "^1.2.3",
-    "totlog": "^1.0.2"
+    "totlog": "^1.0.2",
+    "jsonwebtoken": "^7.4.1"
   },
   "peerDependencies": {
     "webpack": "^2.2.1"
