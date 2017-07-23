@@ -21,7 +21,7 @@ module.exports = function (secret) {
 		return jsonwebtoken.sign(payload, secret, { algorithm })
 	}
 
-	function middleware ({ field = 'user', options = { expires: 0, secure: true, httpOnly: true } }) {
+	function middleware ({ field = 'user', options = { expires: 0, secure: true, httpOnly: true } } = { }) {
 		return (req, res, next) => {
 			const cookies = cookie.parse(req.headers.cookie || '')
 			req[field] = deserialize(cookies[field])
