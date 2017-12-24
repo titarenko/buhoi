@@ -1,33 +1,23 @@
-const constants = require('constants')
-const fs = require('fs')
-const { resolve } = require('path')
-const http = require('http')
-const httpShutdown = require('http-shutdown')
-const https = require('https')
 const glob = require('glob')
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
-const { scheduleJob } = require('node-schedule')
 const { pg, rmq, errors } = require('infra')
 const totlog = require('totlog')
 const log = require('totlog')(__filename)
 const historyFallback = require('./html5-history-fallback')
 const validation = require('./validation')
 
-module.exports = { start }
+module.exports = { start, stop }
 
-function start () {
-  configureLogging()
-  startTasks()
+publicPath = `${__dirname}/../../../public`
 
-  const redirector = createRedirector()
-  const carrier = createCarrier(createApp())
+function start (optio) {
 
-  redirector.listen(process.env.HTTP_PORT || 80)
-  carrier.listen(process.env.HTTPS_PORT || 443)
+  module.exports.transport = transport
+  module.exports.carrier = carrier
 
-  log.debug('server started')
+  log.debug('web server started')
 
   return {
     stop: () => {
@@ -44,6 +34,8 @@ function start () {
     },
   }
 }
+
+
 
 function createRedirector () {
   return httpShutdown(http.createServer((req, res) => {
@@ -76,17 +68,7 @@ function createApp () {
   app.use(getAreas(publicPath))
   app.use(express.static(publicPath))
   app.use((error, req, res, next) => {
-    if (error instanceof validation.ValidationError) {
-      res.status(400).json(error.fields)
-    } else if (error instanceof errors.NotAuthenticatedError) {
-      res.status(401).end()
-    } else if (error instanceof errors.NotAuthorizedError) {
-      log.warn(req.path, error)
-      res.status(403).end()
-    } else {
-      log.error(req.path, error)
-      res.status(500).end()
-    }
+    
   })
 
   return app
@@ -101,34 +83,4 @@ function getAreas (publicPath) {
     router.use(`/${area}`, historyFallback(publicPath), instance)
   })
   return router
-}
-
-function configureLogging () {
-  const url = process.env.LOGSTASH_URL
-  if (url) {
-    totlog.on('message', totlog.appenders.logstash({ url }))
-  }
-}
-
-function startTasks () {
-  if (['0', 'false'].includes(process.env.TASKS)) {
-    return
-  }
-
-  const name = path => path
-    .replace('/tasks', '')
-    .replace('/', ':')
-    .replace(/.js$/, '')
-
-  const tasks = glob.sync('**/tasks/*.js', { cwd: `${__dirname}/../features` })
-  const modules = tasks.map(path => require(`features/${path}`))
-
-  tasks.forEach((path, index) => rmq.consumeJob(name(path), modules[index].handler))
-
-  rmq.consumeJob('schedule', () => new Promise((resolve, reject) =>
-    modules.forEach((m, index) => scheduleJob(
-      m.schedule,
-      () => rmq.publishJob(name(tasks[index]))
-    ))
-  ))
 }

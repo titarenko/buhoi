@@ -6,7 +6,7 @@ const httpShutdown = require('http-shutdown')
 
 module.exports = { start }
 
-function start (app) {
+function start ({ app, beforeExit }) {
   const {
     BUHOI_PORTS = process.env.NODE_ENV === 'development'
       ? '3000;3001'
@@ -21,13 +21,10 @@ function start (app) {
   redirector.listen(httpPort)
   carrier.listen(httpsPort)
 
-  const shutdown = () => {
+  beforeExit(() => {
     redirector.shutdown()
     carrier.shutdown()
-  }
-
-  process.on('SIGINT', shutdown)
-  process.on('SIGTERM', shutdown)
+  })
 }
 
 function createRedirector () {

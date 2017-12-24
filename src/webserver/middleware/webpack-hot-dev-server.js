@@ -1,8 +1,6 @@
 const { Router } = require('express')
 
-module.exports = createRouter
-
-function createRouter (webpackConfigPath) {
+module.exports = function webpackHotMiddleware ({ webpackConfigPath, beforeExit }) {
   const router = Router()
 
   if (process.env.NODE_ENV === 'development') {
@@ -15,8 +13,8 @@ function createRouter (webpackConfigPath) {
 
     router.use(instance)
     router.use(webpackHotMiddleware(compiler))
-  
-    process.on('SIGINT', () => instance.close())
+
+    beforeExit(() => instance.close())
   }
 
   return router
