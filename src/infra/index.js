@@ -1,81 +1,22 @@
-const totlog = require('totlog')
 const korrekt = require('korrekt')
-const knex = require('knex')
-const mqu = require('mqu')
 
-module.exports = { initialize, terminate, log: totlog, v: korrekt }
+const log = require('./log')
+const pg = require('./pg')
+const mq = require('./mq')
 
-function initialize () {
-  intializeLog()
-  initializePg()
-  initializeMq()
-}
+module.exports = { initialize, terminate, v: korrekt }
 
-function intializeLog () {
-  const { BUHOI_SLACK, BUHOI_LOGSTASH } = process.env
-
-  if (BUHOI_SLACK) {
-    const [token, channel, icon] = BUHOI_SLACK.split(';')
-    const slack = totlog.appenders.slack({ token, channel, icon })
-    totlog.on('message', m => {
-      if (m.level === 'error') {
-        slack(m)
-      }
-    })
-  }
-
-  if (BUHOI_LOGSTASH) {
-    const logstash = totlog.appenders.logstash({ url: BUHOI_LOGSTASH })
-    totlog.on('message', logstash)
-  }
-}
-
-function initializePg () {
-  const { BUHOI_PG, BUHOI_APP } = process.env
-
-  if (!BUHOI_PG) {
-    return
-  }
-
-  const pg = knex({
-    client: 'pg',
-    connection: BUHOI_PG,
+async function initialize () {
+  module.exports.log = await log.intialize()
+  await Promise.all([pg.initialize(), mq.intialize()]).then(([pg, mq]) => {
+    module.exports.pg = pg
+    module.exports.mq = mq
   })
-
-  if (BUHOI_APP) {
-    pg.modify = (user, fn) => pg.transaction(async t => {
-      await pg('pg_settings')
-        .transacting(t)
-        .update({ setting: user.id })
-        .where({ name: `${BUHOI_APP}.current_user_id` })
-      await fn(t)
-    })
-  }
-
-  module.exports.pg = pg
-}
-
-function initializeMq () {
-  const { BUHOI_MQ } = process.env
-
-  if (BUHOI_MQ) {
-    module.exports.mq = mqu(BUHOI_MQ)
-  }
 }
 
 async function terminate () {
   await Promise.all([
-    terminatePg(),
-    terminateMq(),
+    pg.terminate(module.exports.pg),
+    mq.terminate(module.exports.mq),
   ])
-}
-
-function terminatePg () {
-  const { pg } = module.exports
-  return pg ? new Promise(pg.destroy) : Promise.resolve()
-}
-
-function terminateMq () {
-  const { mq } = module.exports
-  return mq ? mq.close() : Promise.resolve()
 }
