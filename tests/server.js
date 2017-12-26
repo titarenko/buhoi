@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 const mockRequire = require('mock-require')
 const sinon = require('sinon')
 const should_ = require('should')

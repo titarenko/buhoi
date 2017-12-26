@@ -1,3 +1,5 @@
+const { Router } = require('express')
+
 module.exports = function rpcHost ({
   isAuthorized,
   resolveProcedure,

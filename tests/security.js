@@ -1,6 +1,8 @@
-const should_ = require('should')
+/* eslint-env mocha */
+
 const sinon = require('sinon')
-const shouldSinon_ = require('should-sinon')
+require('should')
+require('should-sinon')
 const security = require('../modules/security')
 
 describe('security', function () {

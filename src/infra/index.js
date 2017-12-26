@@ -31,7 +31,7 @@ function intializeLog () {
 }
 
 function initializePg () {
-  const { BUHOI_PG } = process.env
+  const { BUHOI_PG, BUHOI_APP } = process.env
 
   if (!BUHOI_PG) {
     return

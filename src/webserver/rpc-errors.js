@@ -1,13 +1,7 @@
-class UnauthorizedError extends Error {
-  constructor () {
-    super()
-  }
+class NotAuthorizedError extends Error {
 }
 
 class NotFoundError extends Error {
-  constructor () {
-    super()
-  }
 }
 
 module.exports = { NotAuthorizedError, NotFoundError }

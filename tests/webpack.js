@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 const webpack = require('../modules/webpack')
 const should_ = require('should')
 
