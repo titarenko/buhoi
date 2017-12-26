@@ -13,24 +13,26 @@
     "@titarenko/eslint-config": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.4.6",
+    "content-type": "^1.0.4",
     "http-proxy": "^1.16.2",
     "http-shutdown": "^1.2.0",
     "jsonwebtoken": "^7.4.1",
     "knex": "^0.14.2",
     "korrekt": "^1.2.3",
+    "lru-cache": "^4.1.1",
     "memoizee": "^0.4.11",
     "mime": "^2.0.3",
     "morgan": "^1.9.0",
     "mqu": "^1.1.1",
     "node-schedule": "^1.2.5",
     "pg": "^7.4.0",
+    "raw-body": "^2.3.2",
     "totlog": "^2.0.2"
   },
   "peerDependencies": {
     "webpack": "^2.2.1"
   },
   "devDependencies": {
-    "body-parser": "^1.16.1",
     "colors": "^1.1.2",
     "coveralls": "^2.11.16",
     "eslint": "^3.5.0",
