@@ -1,26 +1,32 @@
-// const { scheduleJob } = require('node-schedule')
-// const { mq } = require('../infra')
+const glob = require('glob')
+const { scheduleJob } = require('node-schedule')
+const { mq } = require('../infra')
 
-// function startTasks () {
-//   if (['0', 'false'].includes(process.env.TASKS)) {
-//     return
-//   }
+module.exports = { start, stop }
 
-//   const name = path => path
-//     .replace('/tasks', '')
-//     .replace('/', ':')
-//     .replace(/.js$/, '')
+function start ({
+  featuresPath = `${__dirname}/../../../../features`,
+} = { }) {
+  if (!mq || process.env.BUHOI_DISABLE_TASKS) {
+    return
+  }
 
-//   const rootPath = `${__dirname}/../../../../features`
-//   const tasks = glob.sync('**/tasks/*.js', { cwd: rootPath })
-//   const modules = tasks.map(path => require(`${rootPath}/${path}`))
+  const tasks = glob.sync('**/tasks/*.js', { cwd: featuresPath }).map(path => ({
+    name: path
+      .replace('/tasks', '')
+      .replace('/', ':')
+      .replace(/.js$/, ''),
+    instance: require(`${featuresPath}/${path}`),
+  }))
 
-//   tasks.forEach((path, index) => mq.consumeJob(name(path), modules[index].handler))
+  tasks.forEach(({ name, instance: { handler } }) => mq.consumeJob(name, handler))
 
-//   mq.consumeJob('schedule', () => new Promise((resolve, reject) =>
-//     modules.forEach((m, index) => scheduleJob(
-//       m.schedule,
-//       () => mq.publishJob(name(tasks[index]))
-//     ))
-//   ))
-// }
+  mq.consumeJob('schedule', () => new Promise((resolve, reject) => {
+    tasks.forEach(({ name, instance: { schedule } }) =>
+      scheduleJob(schedule, () => mq.publishJob(name))
+    )
+  }))
+}
+
+function stop (instance) {
+}
