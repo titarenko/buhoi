@@ -3,7 +3,7 @@ module.exports = function rpcHost ({
   resolveProcedure,
   getContext,
   NotAuthorizedError,
-  NotFoundError
+  NotFoundError,
 }) {
   const router = Router()
   router.use('/rpc/:module.:procedure', async function (req, res) {

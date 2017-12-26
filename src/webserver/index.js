@@ -13,7 +13,6 @@ module.exports = { start, stop }
 publicPath = `${__dirname}/../../../public`
 
 function start (optio) {
-
   module.exports.transport = transport
   module.exports.carrier = carrier
 
@@ -34,8 +33,6 @@ function start (optio) {
     },
   }
 }
-
-
 
 function createRedirector () {
   return httpShutdown(http.createServer((req, res) => {
@@ -68,7 +65,7 @@ function createApp () {
   app.use(getAreas(publicPath))
   app.use(express.static(publicPath))
   app.use((error, req, res, next) => {
-    
+
   })
 
   return app

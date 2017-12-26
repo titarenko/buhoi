@@ -8,6 +8,6 @@ module.exports = function session ({ cookieName = 'doge' }) {
       expires: 0,
       secure: true,
     })
-    res.clearSession = () => res.clearCookie(cookieName) 
+    res.clearSession = () => res.clearCookie(cookieName)
   }
 }

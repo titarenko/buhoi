@@ -4,7 +4,7 @@ const rpcErrors = require('./rpc-errors')
 module.exports = function ({
   web: { publicPath, webpackConfigPath },
   rpc,
-  beforeExit
+  beforeExit,
 } = { }) {
   const app = express()
 

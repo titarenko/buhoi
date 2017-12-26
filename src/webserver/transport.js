@@ -10,7 +10,7 @@ function start ({ app, beforeExit }) {
   const {
     BUHOI_PORTS = process.env.NODE_ENV === 'development'
       ? '3000;3001'
-      : '80;443'
+      : '80;443',
   } = process.env
 
   const [httpPort, httpsPort] = BUHOI_PORTS.split(';')
@@ -38,7 +38,7 @@ function createCarrier (app) {
   const {
     BUHOI_CERTS_PATH = process.env.NODE_ENV === 'development'
       ? `${__dirname}/../etc/self-signed-certs-localhost`
-      : undefined
+      : undefined,
   } = process.env
 
   if (!BUHOI_CERTS_PATH) {
