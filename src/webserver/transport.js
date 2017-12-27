@@ -4,9 +4,9 @@ const http = require('http')
 const https = require('https')
 const httpShutdown = require('http-shutdown')
 
-module.exports = { start }
+module.exports = { create, dispose }
 
-function start ({ app, beforeExit }) {
+function create (app) {
   const {
     BUHOI_PORTS = process.env.NODE_ENV === 'development'
       ? '3000;3001'
@@ -21,10 +21,15 @@ function start ({ app, beforeExit }) {
   redirector.listen(httpPort)
   carrier.listen(httpsPort)
 
-  beforeExit(() => {
-    redirector.shutdown()
-    carrier.shutdown()
-  })
+  return { redirector, carrier }
+}
+
+function dispose ({ carrier, redirector }) {
+  return new Promise(
+    resolve => redirector.shutdown(
+      () => carrier.shutdown(resolve)
+    )
+  )
 }
 
 function createRedirector () {
@@ -37,7 +42,7 @@ function createRedirector () {
 function createCarrier (app) {
   const {
     BUHOI_CERTS_PATH = process.env.NODE_ENV === 'development'
-      ? `${__dirname}/../etc/self-signed-certs-localhost`
+      ? `${__dirname}/../../etc/certs`
       : undefined,
   } = process.env
 

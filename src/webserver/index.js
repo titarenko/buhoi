@@ -6,11 +6,11 @@ module.exports = { start, stop }
 let app, server
 
 function start (options) {
-  app = application(options)
-  server = transport(app)
+  app = application.create(options)
+  server = transport.create(app)
 }
 
 async function stop () {
-  await app.stop()
-  await server.stop()
+  await transport.dispose(server)
+  await application.dispose(app)
 }

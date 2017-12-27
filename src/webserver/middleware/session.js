@@ -20,7 +20,7 @@ module.exports = function session ({ cookieName = 'doge' }) {
     { primitive: true }
   )
 
-  return function sessionAction (req, res, next) {
+  return function sessionMiddleware (req, res, next) {
     req.session = getSessionFromCookie(req.headers.cookie)
     next()
   }

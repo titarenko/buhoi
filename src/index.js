@@ -1,5 +1,6 @@
 const infra = require('./infra')
 const webserver = require('./webserver')
+const rpcResults = require('./webserver/rpc-results')
 const taskserver = require('./taskserver')
 
 module.exports = {
@@ -10,6 +11,9 @@ module.exports = {
   mq: infra.mq,
   log: infra.log,
   v: infra.v,
+
+  file: rpcResults.file,
+  session: rpcResults.session,
 }
 
 function start () {

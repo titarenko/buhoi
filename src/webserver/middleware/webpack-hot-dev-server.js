@@ -1,6 +1,6 @@
 const { Router } = require('express')
 
-module.exports = function webpackHotMiddleware ({ webpackConfigPath, beforeExit }) {
+module.exports = function webpackHotDevServer (webpackConfigPath) {
   const router = Router()
 
   if (process.env.NODE_ENV === 'development') {
@@ -14,7 +14,9 @@ module.exports = function webpackHotMiddleware ({ webpackConfigPath, beforeExit 
     router.use(instance)
     router.use(webpackHotMiddleware(compiler))
 
-    beforeExit(() => instance.close())
+    router.dispose = () => new Promise(instance.close)
+  } else {
+    router.dispose = () => Promise.resolve()
   }
 
   return router
