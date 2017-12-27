@@ -1,15 +1,40 @@
-// const glob = require('glob')
-//
-// function getAreas (publicPath) {
-//   const areas = glob.sync('**/index.js', { cwd: `${__dirname}/../areas` })
-//   const router = express.Router()
-//   areas.forEach(path => {
-//     const area = path.replace('/index.js', '')
-//     const instance = require(`areas/${area}`)
-//     router.use(`/${area}`, historyFallback(publicPath), instance)
-//   })
-//   return router
-// }
+const glob = require('glob')
+const humanInterval = require('human-interval')
 
-// public
-// cache
+module.exports = { createResolveProcedure }
+
+function createResolveProcedure ({ featuresPath }) {
+  const registry = glob('**/index.js', { cwd: featuresPath })
+    .reduce((map, path) => ({
+      ...map,
+      [getFeatureName(path)]: loadFeature(featuresPath, path),
+    }), { })
+
+  return function resolveProcedure (feature, procedure) {
+    const procedures = registry[feature]
+    return procedures && procedures[procedure]
+  }
+}
+
+function getFeatureName (path) {
+  return path.replace('/index.js', '')
+}
+
+function loadFeature (basePath, featurePath) {
+  const feature = require(`${basePath}/${featurePath}`)
+  return Object.keys(feature)
+    .filter(name => typeof feature[name] === 'function')
+    .reduce((map, name) => {
+      const body = feature[name]
+      const code = body.toString()
+      const cacheMatch = code.match(/\/\/ @cache (.+)/)
+      return {
+        ...map,
+        [name]: {
+          public: code.includes('// @public'),
+          cache: cacheMatch && humanInterval(cacheMatch[1]),
+          body,
+        },
+      }
+    }, { })
+}
