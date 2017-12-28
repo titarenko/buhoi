@@ -40,7 +40,7 @@ module.exports = function rpcHost ({
   }
 
   router.use('/rpc/:feature.:procedure', async function (req, res) {
-    const { session, method } = req.params
+    const { session, method } = req
     const { feature, procedure } = req.params
 
     if (!await cache.isAuthorized(session, feature, procedure)) {
