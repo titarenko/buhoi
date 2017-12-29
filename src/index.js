@@ -18,11 +18,11 @@ module.exports = {
 }
 
 function start (options = { }) {
-  _.extend(options, {
+  _.extend({
     featuresPath: `${__dirname}/../../features`,
     publicPath: `${__dirname}/../../public`,
     webpackConfigPath: `${__dirname}/../../pages/webpack.config.js`,
-  })
+  }, options)
 
   infra.initialize()
 

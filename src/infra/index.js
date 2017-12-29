@@ -7,8 +7,8 @@ const mq = require('./mq')
 module.exports = { initialize, terminate, v: korrekt }
 
 async function initialize () {
-  module.exports.log = await log.intialize()
-  await Promise.all([pg.initialize(), mq.intialize()]).then(([pg, mq]) => {
+  module.exports.log = await log.initialize()
+  await Promise.all([pg.initialize(), mq.initialize()]).then(([pg, mq]) => {
     module.exports.pg = pg
     module.exports.mq = mq
   })

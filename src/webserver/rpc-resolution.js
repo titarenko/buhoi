@@ -4,7 +4,7 @@ const humanInterval = require('human-interval')
 module.exports = { createResolveProcedure }
 
 function createResolveProcedure (featuresPath) {
-  const registry = glob('**/index.js', { cwd: featuresPath })
+  const registry = glob.sync('**/index.js', { cwd: featuresPath })
     .reduce((map, path) => ({
       ...map,
       [getFeatureName(path)]: loadFeature(featuresPath, path),

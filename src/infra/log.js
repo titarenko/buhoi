@@ -1,8 +1,8 @@
 const totlog = require('totlog')
 
-module.exports = { intialize, terminate }
+module.exports = { initialize, terminate }
 
-function intialize () {
+function initialize () {
   const { BUHOI_SLACK, BUHOI_LOGSTASH } = process.env
 
   if (BUHOI_SLACK) {

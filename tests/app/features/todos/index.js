@@ -1,12 +1,14 @@
 const sinon = require('sinon')
 
 const publicProcedureSpy = sinon.spy()
+const privateProcedureSpy = sinon.spy()
 
 module.exports = {
   publicProcedure,
   publicProcedureSpy,
   cachedPublicProcedure,
   privateProcedure,
+  privateProcedureSpy,
 }
 
 function publicProcedure (...args) {
@@ -21,6 +23,7 @@ function cachedPublicProcedure (...args) {
   return new Date()
 }
 
-function privateProcedure () {
+function privateProcedure (...args) {
+  privateProcedureSpy(...args)
   return NaN
 }

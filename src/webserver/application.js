@@ -9,14 +9,15 @@ function create ({
   publicPath,
   webpackConfigPath,
   rpc: {
-    resolveProcedure = rpcResolution.create(featuresPath),
+    resolveProcedure = rpcResolution.createResolveProcedure(featuresPath),
     resolutionCacheDuration = undefined,
 
     isAuthorized = () => false,
     authorizationCacheDuration = 5000,
 
     getContext = () => null,
-  } = { }
+    contextCacheDuration = 5000,
+  } = { },
 }) {
   const app = express()
 
@@ -30,7 +31,7 @@ function create ({
     resolveProcedure,
     isAuthorized,
     getContext,
-    ...rpcErrors
+    ...rpcErrors,
   }))
   app.use(express.static(publicPath))
   app.use(require('./middleware/html5-history-fallback')(publicPath))

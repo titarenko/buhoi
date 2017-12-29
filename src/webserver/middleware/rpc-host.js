@@ -4,7 +4,22 @@ const rawBody = require('raw-body')
 const contentType = require('content-type')
 const lruCache = require('lru-cache')
 
-module.exports = function rpcHost ({
+module.exports = function rpcHost (options) {
+  const router = Router()
+  const handler = createHandler(options)
+
+  router.use('/rpc/:feature.:procedure', async function (req, res, next) {
+    try {
+      await handler(req, res)
+    } catch (e) {
+      next(e)
+    }
+  })
+
+  return router
+}
+
+function createHandler ({
   isAuthorized,
   authorizationCacheDuration,
 
@@ -19,8 +34,8 @@ module.exports = function rpcHost ({
 
   NotAuthorizedError,
   NotFoundError,
+  ProtocolViolationError,
 }) {
-  const router = Router()
   const cache = {
     isAuthorized: memoizee(isAuthorized, {
       primitive: true,
@@ -39,7 +54,7 @@ module.exports = function rpcHost ({
     }),
   }
 
-  router.use('/rpc/:feature.:procedure', async function (req, res) {
+  return async function handle (req, res) {
     const { session, method } = req
     const { feature, procedure } = req.params
 
@@ -68,15 +83,17 @@ module.exports = function rpcHost ({
       render(cache.getResult.get(cachedResultKey), res)
     } else {
       const args = JSON.parse(argsJson)
-      const result = await instance.body.call(await cache.getContext(session), ...args, req, res)
+      if (!Array.isArray(args)) {
+        throw new ProtocolViolationError(argsJson)
+      }
+      const context = await cache.getContext(session)
+      const result = await instance.body.call(context, ...args, req, res)
       if (instance.cache) {
         cache.getResult.set(cachedResultKey, result, instance.cache)
       }
       render(result, res)
     }
-  })
-
-  return router
+  }
 }
 
 function render (result, res) {
