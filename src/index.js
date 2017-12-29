@@ -2,6 +2,7 @@ const infra = require('./infra')
 const webserver = require('./webserver')
 const rpcResults = require('./webserver/rpc-results')
 const taskserver = require('./taskserver')
+const _ = require('lodash')
 
 module.exports = {
   start,
@@ -16,11 +17,17 @@ module.exports = {
   session: rpcResults.session,
 }
 
-function start () {
+function start (options = { }) {
+  _.extend(options, {
+    featuresPath: `${__dirname}/../../features`,
+    publicPath: `${__dirname}/../../public`,
+    webpackConfigPath: `${__dirname}/../../pages/webpack.config.js`,
+  })
+
   infra.initialize()
 
-  webserver.start()
-  taskserver.start()
+  webserver.start(options)
+  taskserver.start(options)
 }
 
 async function stop () {

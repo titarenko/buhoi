@@ -37,6 +37,7 @@
     "lint-staged": "^6.0.0",
     "mocha": "^4.0.1",
     "mock-require": "^2.0.1",
+    "nyc": "^11.4.1",
     "request": "^2.83.0",
     "should": "^13.2.0",
     "should-sinon": "0.0.6",
@@ -46,7 +47,7 @@
     "precommit": "lint-staged",
     "prepush": "npm run lint",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
-    "test": "istanbul cover _mocha -- --recursive tests",
+    "test": "nyc mocha --recursive tests",
     "test-on-travis": "istanbul cover _mocha -- --recursive tests && cat ./coverage/lcov.info | coveralls",
     "release": "npm run lint && npm run test && npm version patch && npm publish && git push"
   },
