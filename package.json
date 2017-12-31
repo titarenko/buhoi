@@ -47,12 +47,11 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "prepush": "npm run lint",
+    "prepush": "npm t",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
-    "test": "mocha -r should --recursive tests",
-    "cover": "nyc mocha --recursive tests",
-    "test-on-travis": "istanbul cover _mocha -- --recursive tests && cat ./coverage/lcov.info | coveralls",
-    "release": "npm run lint && npm run test && npm version patch && npm publish && git push"
+    "test": "npm run lint && nyc mocha -r should --recursive tests",
+    "report-to-coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "release": "npm t && npm version patch && npm publish && git push"
   },
   "lint-staged": {
     "*.js": "eslint"

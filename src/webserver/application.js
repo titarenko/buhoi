@@ -27,6 +27,7 @@ function create ({
   app.use(require('./middleware/access-log')({ category: __filename }))
   app.use(require('./middleware/letsencrypt-webroot')())
   app.use(webpackHotDevServer)
+  app.use(require('./middleware/session')())
   app.use(require('./middleware/rpc-host')({
     resolveProcedure,
     isAuthorized,

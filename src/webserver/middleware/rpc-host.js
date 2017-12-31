@@ -68,7 +68,7 @@ function createHandler ({
     }
 
     const argsJson = method === 'GET'
-      ? decodeURIComponent(req.query.args)
+      ? req.query.args && decodeURIComponent(req.query.args)
       : await rawBody(req, {
         length: req.headers['content-length'],
         limit: argsSizeLimit,
@@ -82,16 +82,29 @@ function createHandler ({
     if (cache.getResult.has(cachedResultKey)) {
       render(cache.getResult.get(cachedResultKey), res)
     } else {
-      const args = JSON.parse(argsJson)
-      if (!Array.isArray(args)) {
-        throw new ProtocolViolationError(argsJson)
-      }
+      const args = getArgs(argsJson, ProtocolViolationError)
       const context = await cache.getContext(session)
       const result = await instance.body.call(context, ...args, req, res)
       if (instance.cache) {
         cache.getResult.set(cachedResultKey, result, instance.cache)
       }
       render(result, res)
+    }
+  }
+}
+
+function getArgs (argsJson, ProtocolViolationError) {
+  try {
+    const args = JSON.parse(argsJson || '[]') || []
+    if (!Array.isArray(args)) {
+      throw new ProtocolViolationError(argsJson)
+    }
+    return args
+  } catch (e) {
+    if (e.message.startsWith('SyntaxError')) {
+      throw new ProtocolViolationError(argsJson)
+    } else {
+      throw e
     }
   }
 }

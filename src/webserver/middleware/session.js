@@ -2,7 +2,7 @@ const cookie = require('cookie')
 const memoizee = require('memoizee')
 const express = require('express')
 
-module.exports = function session ({ cookieName = 'doge' }) {
+module.exports = function session ({ cookieName = 'doge' } = { }) {
   express.response.setSession = function setSession (session) {
     this.cookie(cookieName, session, {
       httpOnly: true,
@@ -16,7 +16,7 @@ module.exports = function session ({ cookieName = 'doge' }) {
   }
 
   const getSessionFromCookie = memoizee(
-    cookieHeaderValue => cookie.parse(cookieHeaderValue)[cookieName],
+    cookieHeaderValue => cookieHeaderValue && cookie.parse(cookieHeaderValue)[cookieName],
     { primitive: true }
   )
 
