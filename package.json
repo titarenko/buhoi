@@ -16,7 +16,7 @@
     "http-shutdown": "^1.2.0",
     "human-interval": "^0.1.6",
     "knex": "^0.14.2",
-    "korrekt": "^2.1.0",
+    "korrekt": "^2.1.2",
     "lru-cache": "^4.1.1",
     "memoizee": "^0.4.11",
     "mime": "^2.1.0",

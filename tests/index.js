@@ -137,4 +137,16 @@ describe('buhoi', function () {
     headers['content-type'].should.eql('text/plain; charset=utf-8')
     headers['content-disposition'].should.eql('attachment; filename="secret.txt"')
   })
+
+  it('should render validation errors as json with code 400', async function () {
+    const { statusCode, body } = await request({
+      url: 'https://localhost:3001/rpc/todos.create',
+      method: 'POST',
+      json: [{ name: '1' }],
+      strictSSL: false,
+      timeout: 1000,
+    })
+    statusCode.should.eql(400)
+    body.should.eql({ field: 'has invalid value' })
+  })
 })

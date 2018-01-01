@@ -1,3 +1,4 @@
+const buhoi = require('../../../../src')
 const sinon = require('sinon')
 
 const publicProcedureSpy = sinon.spy()
@@ -9,6 +10,7 @@ module.exports = {
   cachedPublicProcedure,
   privateProcedure,
   privateProcedureSpy,
+  create,
 }
 
 function publicProcedure (...args) {
@@ -26,4 +28,9 @@ function cachedPublicProcedure (...args) {
 function privateProcedure (...args) {
   privateProcedureSpy(...args)
   return NaN
+}
+
+function create () {
+  // @public
+  throw new buhoi.v.ValidationError({ field: 'has invalid value' })
 }
