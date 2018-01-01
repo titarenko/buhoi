@@ -49,7 +49,8 @@
     "precommit": "lint-staged",
     "prepush": "npm t",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
-    "test": "npm run lint && nyc mocha -r should --recursive tests",
+    "test": "npm run lint && mocha -r should --recursive tests",
+    "cover": "npm run lint && nyc mocha -r should --recursive tests",
     "report-to-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "release": "npm t && npm version patch && npm publish && git push"
   },

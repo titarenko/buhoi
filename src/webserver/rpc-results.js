@@ -9,6 +9,7 @@ function session (session) {
     } else {
       res.setSession(session)
     }
+    res.end()
   }
 }
 
