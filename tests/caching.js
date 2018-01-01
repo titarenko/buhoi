@@ -6,9 +6,8 @@ const request = Promise.promisify(require('request'))
 describe('buhoi caching', function () {
   it('should cache results if requested', async function () {
     const get = () => request({
-      url: 'https://localhost:3001/rpc/secrets.getTime',
+      url: 'https://localhost:3001/rpc/todos.cachedPublicProcedure',
       method: 'GET',
-      headers: { 'Cookie': 'doge=dodo' },
       json: [],
       strictSSL: false,
       timeout: 1000,
@@ -23,7 +22,7 @@ describe('buhoi caching', function () {
 
   it('should use different cache per user', async function () {
     const get = session => request({
-      url: 'https://localhost:3001/rpc/secrets.getTime',
+      url: 'https://localhost:3001/rpc/todos.cachedPublicProcedure',
       method: 'GET',
       headers: { 'Cookie': `doge=${session}` },
       json: [],

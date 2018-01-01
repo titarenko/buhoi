@@ -7,7 +7,6 @@ module.exports = {
   getSecretSpy,
   getSecret,
   getSecretFile,
-  getTime,
 }
 
 function getSecret (...args) {
@@ -19,10 +18,4 @@ function getSecret (...args) {
 function getSecretFile () {
   // @public
   return buhoi.file('secret.txt', 'secret! shhh!')
-}
-
-function getTime () {
-  // @public
-  // @cache 0.2 seconds
-  return new Date()
 }

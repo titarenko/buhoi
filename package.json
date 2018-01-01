@@ -49,12 +49,16 @@
     "prepush": "npm t",
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "test": "npm run lint && mocha -r should --recursive tests",
-    "cover": "npm run lint && nyc mocha -r should --recursive tests",
-    "report": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=html && xdg-open coverage/index.html",
+    "cover": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=html && xdg-open coverage/index.html",
     "report-to-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "release": "npm t && npm version patch && npm publish && git push"
   },
   "lint-staged": {
     "*.js": "eslint"
+  },
+  "nyc": {
+    "exclude": [
+      "tests/**/*.js"
+    ]
   }
 }

@@ -22,7 +22,7 @@ function publicProcedure (...args) {
 
 function cachedPublicProcedure (...args) {
   // @public
-  // @cache 1 min
+  // @cache 0.2 seconds
   return new Date()
 }
 
