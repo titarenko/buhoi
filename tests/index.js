@@ -1,23 +1,29 @@
 /* eslint-env mocha */
 
 const buhoi = require('../src')
+const mockRequire = require('mock-require')
 const Promise = require('bluebird')
 const request = Promise.promisify(require('request'))
-const todos = require('./app/features/todos')
-const secrets = require('./app/features/secrets')
 
 describe('buhoi', function () {
   process.env.BUHOI_WEBROOT = `${__dirname}/app/public`
 
-  beforeEach(() => buhoi.start({
-    featuresPath: `${__dirname}/app/features`,
-    publicPath: `${__dirname}/app/public`,
-    webpackConfigPath: `${__dirname}/app/pages/webpack.config.js`,
-    rpc: {
-      isAuthorized: (session, feature, procedure) =>
-        feature !== 'secrets' || session && session.startsWith('dodo'),
-    },
-  }))
+  let secrets, todos
+
+  beforeEach(() => {
+    secrets = mockRequire.reRequire('./app/features/secrets')
+    todos = mockRequire.reRequire('./app/features/todos')
+    buhoi.start({
+      featuresPath: `${__dirname}/app/features`,
+      publicPath: `${__dirname}/app/public`,
+      webpackConfigPath: `${__dirname}/app/pages/webpack.config.js`,
+      rpc: {
+        isAuthorized: (session, feature, procedure) =>
+          feature !== 'secrets' || session && session.startsWith('dodo'),
+      },
+    })
+  })
+
   afterEach(() => buhoi.stop())
 
   it('should serve public procedures', async function () {
@@ -191,5 +197,52 @@ describe('buhoi', function () {
     const response1 = await get('dodo1')
     const response2 = await get('dodo2')
     response1.body.should.not.eql(response2.body)
+  })
+
+  it('should treat no content as empty arg array', async function () {
+    const { statusCode } = await request({
+      url: 'https://localhost:3001/rpc/todos.publicProcedure',
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      strictSSL: false,
+      timeout: 1000,
+    })
+    todos.publicProcedureSpy.calledOnce.should.eql(true)
+    todos.publicProcedureSpy.lastCall.args.slice(0, -2).should.eql([])
+    statusCode.should.eql(200)
+  })
+
+  it('should treat no args in qs as empty arg array', async function () {
+    const { statusCode } = await request({
+      url: 'https://localhost:3001/rpc/todos.publicProcedure',
+      method: 'GET',
+      strictSSL: false,
+      timeout: 1000,
+    })
+    todos.publicProcedureSpy.calledOnce.should.eql(true)
+    todos.publicProcedureSpy.lastCall.args.slice(0, -2).should.eql([])
+    statusCode.should.eql(200)
+  })
+
+  it('should respond with 500 if args are invalid JSON', async function () {
+    const { statusCode } = await request({
+      url: 'https://localhost:3001/rpc/todos.publicProcedure',
+      method: 'GET',
+      qs: { args: 'arg' },
+      strictSSL: false,
+      timeout: 1000,
+    })
+    statusCode.should.eql(500)
+  })
+
+  it('should respond with 500 if body does not contains array of args', async function () {
+    const { statusCode } = await request({
+      url: 'https://localhost:3001/rpc/todos.publicProcedure',
+      method: 'POST',
+      json: 'dolphin',
+      strictSSL: false,
+      timeout: 1000,
+    })
+    statusCode.should.eql(500)
   })
 })

@@ -72,7 +72,7 @@ function createHandler ({
       : await rawBody(req, {
         length: req.headers['content-length'],
         limit: argsSizeLimit,
-        encoding: contentType.parse(req).parameters.charset,
+        encoding: contentType.parse(req).parameters.charset || 'utf-8',
       })
 
     const cachedResultKey = instance.cache
@@ -101,7 +101,7 @@ function getArgs (argsJson, ProtocolViolationError) {
     }
     return args
   } catch (e) {
-    if (e.message.startsWith('SyntaxError')) {
+    if (e.name === 'SyntaxError') {
       throw new ProtocolViolationError(argsJson)
     } else {
       throw e
