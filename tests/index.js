@@ -149,4 +149,16 @@ describe('buhoi', function () {
     statusCode.should.eql(400)
     body.should.eql({ field: 'has invalid value' })
   })
+
+  it('should render error as empty response with code 500', async function () {
+    const { statusCode, body } = await request({
+      url: 'https://localhost:3001/rpc/todos.raiseError',
+      method: 'POST',
+      json: [],
+      strictSSL: false,
+      timeout: 1000,
+    })
+    statusCode.should.eql(500)
+    true.should.eql(body === undefined)
+  })
 })

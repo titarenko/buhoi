@@ -11,6 +11,7 @@ module.exports = {
   privateProcedure,
   privateProcedureSpy,
   create,
+  raiseError,
 }
 
 function publicProcedure (...args) {
@@ -33,4 +34,9 @@ function privateProcedure (...args) {
 function create () {
   // @public
   throw new buhoi.v.ValidationError({ field: 'has invalid value' })
+}
+
+function raiseError () {
+  // @public
+  throw new Error('boo!')
 }
