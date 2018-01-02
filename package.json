@@ -58,7 +58,8 @@
   },
   "nyc": {
     "exclude": [
-      "tests/**/*.js"
+      "tests/**/*.js",
+      "client/**/*.js"
     ]
   }
 }
