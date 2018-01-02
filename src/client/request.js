@@ -35,7 +35,7 @@ export function get (procedure, ...args) {
   return request({
     method: 'GET',
     url: `/rpc/${procedure}`,
-    qs: { args },
+    qs: { args: encodeURIComponent(JSON.stringify(args)) },
   }).then(handleResponseStatusCode)
 }
 
