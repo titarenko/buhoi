@@ -1,3 +1,3 @@
-import * as request from './request'
+import * as rpc from './rpc'
 
-export { request }
+export { rpc }
