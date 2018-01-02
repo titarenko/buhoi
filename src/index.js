@@ -3,7 +3,6 @@ const webServer = require('./web-server')
 const rpcResults = require('./web-server/rpc-results')
 const taskServer = require('./task-server')
 const _ = require('lodash')
-const client = require('./client')
 
 module.exports = {
   start,
@@ -16,8 +15,6 @@ module.exports = {
 
   file: rpcResults.file,
   session: rpcResults.session,
-
-  client,
 }
 
 function start (options = { }) {
