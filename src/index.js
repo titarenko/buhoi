@@ -1,7 +1,7 @@
 const infra = require('./infra')
-const webserver = require('./webserver')
-const rpcResults = require('./webserver/rpc-results')
-const taskserver = require('./taskserver')
+const webServer = require('./web-server')
+const rpcResults = require('./web-server/rpc-results')
+const taskServer = require('./task-server')
 const _ = require('lodash')
 
 module.exports = {
@@ -26,14 +26,14 @@ function start (options = { }) {
 
   infra.initialize()
 
-  webserver.start(options)
-  taskserver.start(options)
+  webServer.start(options)
+  taskServer.start(options)
 }
 
 async function stop () {
   await Promise.all([
-    webserver.stop(),
-    taskserver.stop(),
+    webServer.stop(),
+    taskServer.stop(),
   ])
   await infra.terminate()
 }
