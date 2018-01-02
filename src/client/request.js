@@ -62,7 +62,7 @@ function handleResponseStatusCode (response) {
     case 500:
       throw new ServerError(response)
     default:
-      return response
+      return response.body
   }
 }
 
