@@ -34,7 +34,7 @@ export class ServerError extends HttpError {
 export function get (procedure, ...args) {
   return request({
     method: 'GET',
-    path: `/rpc/${procedure}`,
+    url: `/rpc/${procedure}`,
     qs: { args },
   }).then(handleResponseStatusCode)
 }
@@ -42,7 +42,7 @@ export function get (procedure, ...args) {
 export function post (procedure, ...args) {
   return request({
     method: 'POST',
-    path: `/rpc/${procedure}`,
+    url: `/rpc/${procedure}`,
     json: args,
   }).then(handleResponseStatusCode)
 }
