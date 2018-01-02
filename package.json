@@ -51,7 +51,7 @@
     "lint": "eslint . --ext .js --ignore-path .gitignore",
     "test": "npm run lint && mocha -r should --recursive tests",
     "cover": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=html && xdg-open coverage/index.html",
-    "travis-coveralls": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=lcov | coveralls",
+    "travis-coveralls": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=text-lcov | coveralls",
     "release": "npm t && npm version patch && npm publish && git push"
   },
   "lint-staged": {
