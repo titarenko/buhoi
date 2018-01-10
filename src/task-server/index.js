@@ -4,9 +4,7 @@ const { mq } = require('../infra')
 
 module.exports = { start, stop }
 
-function start ({
-  featuresPath = `${__dirname}/../../../../features`,
-} = { }) {
+function start ({ featuresPath }) {
   if (!mq || process.env.BUHOI_DISABLE_TASKS) {
     return
   }
