@@ -1,10 +1,12 @@
 const express = require('express')
 
+const prefix = '/.well-known/acme-challenge'
+
 module.exports = function letsencryptWebroot () {
   const { BUHOI_WEBROOT } = process.env
   const router = express.Router()
   if (BUHOI_WEBROOT) {
-    router.use('/.well-known/acme-challenge', express.static(`${BUHOI_WEBROOT}/.well-known/acme-challenge`))
+    router.use(prefix, express.static(`${BUHOI_WEBROOT}${prefix}`))
   }
   return router
 }
