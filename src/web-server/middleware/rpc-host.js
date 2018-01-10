@@ -55,7 +55,7 @@ function createHandler ({
   }
 
   return async function handle (req, res) {
-    const { session, method } = req
+    const { session } = req
     const { feature, procedure } = req.params
 
     if (!await cache.isAuthorized(session, feature, procedure)) {
@@ -67,13 +67,7 @@ function createHandler ({
       throw new NotFoundError(feature, procedure)
     }
 
-    const argsJson = method === 'GET'
-      ? req.query.args && decodeURIComponent(req.query.args)
-      : await rawBody(req, {
-        length: req.headers['content-length'],
-        limit: argsSizeLimit,
-        encoding: contentType.parse(req).parameters.charset || 'utf-8',
-      })
+    const argsJson = await getArgsJson(req, argsSizeLimit)
 
     const cachedResultKey = instance.cache
       ? [session, feature, procedure, argsJson].join(';')
@@ -91,6 +85,16 @@ function createHandler ({
       render(result, res)
     }
   }
+}
+
+function getArgsJson (req, argsSizeLimit) {
+  return req.method === 'GET'
+    ? req.query.args && decodeURIComponent(req.query.args)
+    : rawBody(req, {
+      length: req.headers['content-length'],
+      limit: argsSizeLimit,
+      encoding: contentType.parse(req).parameters.charset || 'utf-8',
+    })
 }
 
 function getArgs (argsJson, ProtocolViolationError) {
