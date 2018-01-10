@@ -3,8 +3,9 @@ const korrekt = require('korrekt')
 const log = require('./log')
 const pg = require('./pg')
 const mq = require('./mq')
+const webpack = require('./webpack')
 
-module.exports = { initialize, terminate, v: korrekt }
+module.exports = { initialize, terminate, v: korrekt, webpack }
 
 async function initialize () {
   module.exports.log = await log.initialize()

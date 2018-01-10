@@ -12,6 +12,7 @@ module.exports = {
   mq: infra.mq,
   log: infra.log,
   v: infra.v,
+  webpack: infra.webpack,
 
   file: rpcResults.file,
   session: rpcResults.session,
