@@ -1,20 +1,21 @@
 const glob = require('glob')
 const humanInterval = require('human-interval')
-const korrekt = require('korrekt')
+const { v } = require('../infra')
 
-const validateOptions = korrekt.create({
-  featuresPath: korrekt.required(korrekt.string({ min: 1 })),
-  publicPath: korrekt.required(korrekt.string({ min: 1 })),
-  webpackConfigPath: korrekt.required(korrekt.string({ min: 1 })),
-  isAuthorized: korrekt.required(korrekt.function({ exactly: 3 })),
+const validateOptions = v.create({
+  featuresPath: v.string({ min: 1 }),
+  publicPath: v.string({ min: 1 }),
+  webpackConfigPath: v.string({ min: 1 }),
+  isAuthorized: v.required(v.function({ exactly: 3 })),
 })
 
 module.exports = function createSimpleConfig (options = { }) {
+  const projectPath = `${__dirname}/../../..`
   try {
     const {
-      featuresPath,
-      publicPath,
-      webpackConfigPath,
+      featuresPath = `${projectPath}/features`,
+      publicPath = `${projectPath}/ui/public`,
+      webpackConfigPath = `${projectPath}/ui/webpack.config.js`,
       isAuthorized,
     } = validateOptions(options)
     return {
@@ -22,18 +23,22 @@ module.exports = function createSimpleConfig (options = { }) {
       publicPath,
       webpackConfigPath,
       rpc: {
+        isAuthorized,
+        authorizationCacheDuration: humanInterval(process.env.BUHOI_AUTH_CACHE_DURATION || '1 minute'),
+
         resolveProcedure: createResolveProcedure(featuresPath),
         resolutionCacheDuration: humanInterval('1 year'),
 
-        isAuthorized,
-        authorizationCacheDuration: 5000,
-
         getContext: () => null,
-        contextCacheDuration: 5000,
+        contextCacheDuration: humanInterval('1 year'),
+
+        argsMaxSize: process.env.BUHOI_ARGS_MAX_SIZE || '10mb',
+
+        resultCacheSize: process.env.BUHOI_RESULT_CACHE_SIZE || 10000,
       },
     }
   } catch (e) {
-    if (e instanceof korrekt.ValidationError) {
+    if (e instanceof v.ValidationError) {
       const invalidOptions = Object.keys(e.toJSON())
       throw new Error(`Option ${invalidOptions[0]} has invalid value.`)
     }

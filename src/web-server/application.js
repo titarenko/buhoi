@@ -1,24 +1,22 @@
 const express = require('express')
 const rpcErrors = require('./rpc-errors')
-const rpcResolution = require('./rpc-resolution')
+const { v } = require('../infra')
 
 module.exports = { create, dispose }
 
-function create ({
-  featuresPath,
-  publicPath,
-  webpackConfigPath,
-  rpc: {
-    resolveProcedure = rpcResolution.createResolveProcedure(featuresPath),
-    resolutionCacheDuration = undefined,
+const validateOptions = v.create({
+  publicPath: v.required(v.string({ min: 1 })),
+  webpackConfigPath: v.required(v.string({ min: 1 })),
+  rpc: v.required(),
+})
 
-    isAuthorized = () => false,
-    authorizationCacheDuration = 5000,
+function create (options) {
+  const {
+    publicPath,
+    webpackConfigPath,
+    rpc,
+  } = validateOptions(options)
 
-    getContext = () => null,
-    contextCacheDuration = 5000,
-  } = { },
-}) {
   const app = express()
 
   const webpackHotDevServer = require('./middleware/webpack-hot-dev-server')(webpackConfigPath)
@@ -28,12 +26,7 @@ function create ({
   app.use(require('./middleware/letsencrypt-webroot')())
   app.use(webpackHotDevServer)
   app.use(require('./middleware/session')())
-  app.use(require('./middleware/rpc-host')({
-    resolveProcedure,
-    isAuthorized,
-    getContext,
-    ...rpcErrors,
-  }))
+  app.use(require('./middleware/rpc-host')({ ...rpc, ...rpcErrors }))
   app.use(express.static(publicPath))
   app.use(require('./middleware/html5-history-fallback')(publicPath))
   app.use(require('./middleware/error-handler')(rpcErrors))

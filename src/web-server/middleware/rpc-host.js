@@ -3,10 +3,26 @@ const memoizee = require('memoizee')
 const rawBody = require('raw-body')
 const contentType = require('content-type')
 const lruCache = require('lru-cache')
+const { v } = require('../../infra')
+
+const validateOptions = v.create({
+  isAuthorized: v.required(v.function({ exactly: 3 })),
+  authorizationCacheDuration: v.required(v.integer({ min: 10 })),
+
+  resolveProcedure: v.required(v.function({ exactly: 3 })),
+  resolutionCacheDuration: v.required(v.integer({ min: 10 })),
+
+  getContext: v.required(v.function({ min: 3 })),
+  contextCacheDuration: v.required(v.integer({ min: 10 })),
+
+  argsMaxSize: v.required(v.string({ min: 3 })),
+
+  resultCacheSize: v.required(v.integer({ min: 100 })),
+})
 
 module.exports = function rpcHost (options) {
   const router = Router()
-  const handler = createHandler(options)
+  const handler = createHandler(validateOptions(options))
 
   router.use('/rpc/:feature.:procedure', async function (req, res, next) {
     try {
@@ -29,12 +45,13 @@ function createHandler ({
   getContext,
   contextCacheDuration,
 
-  argsSizeLimit,
-  resultCacheSizeLimit,
+  argsMaxSize,
+  resultCacheSize,
 
   NotAuthorizedError,
   NotFoundError,
   ProtocolViolationError,
+  ProcedureTimeoutError,
 }) {
   const cache = {
     isAuthorized: memoizee(isAuthorized, {
@@ -50,7 +67,7 @@ function createHandler ({
       maxAge: contextCacheDuration,
     }),
     getResult: lruCache({
-      max: resultCacheSizeLimit,
+      max: resultCacheSize,
     }),
   }
 
@@ -67,7 +84,7 @@ function createHandler ({
       throw new NotFoundError(feature, procedure)
     }
 
-    const argsJson = await getArgsJson(req, argsSizeLimit)
+    const argsJson = await getArgsJson(req, argsMaxSize)
 
     const cachedResultKey = instance.cache
       ? [session, feature, procedure, argsJson].join(';')
@@ -78,21 +95,29 @@ function createHandler ({
     } else {
       const args = getArgs(argsJson, ProtocolViolationError)
       const context = await cache.getContext(session)
-      const result = await instance.body.call(context, ...args, req, res)
-      if (instance.cache) {
-        cache.getResult.set(cachedResultKey, result, instance.cache)
+      try {
+        const result = await instance.body.call(context, ...args, req, res)
+        if (instance.cache) {
+          cache.getResult.set(cachedResultKey, result, instance.cache)
+        }
+        render(result, res)
+      } catch (e) {
+        if (e.message.includes('statement cancelled due to statement timeout')) {
+          throw new ProcedureTimeoutError(feature, procedure)
+        } else {
+          throw e
+        }
       }
-      render(result, res)
     }
   }
 }
 
-function getArgsJson (req, argsSizeLimit) {
+function getArgsJson (req, argsMaxSize) {
   return req.method === 'GET'
     ? req.query.args && decodeURIComponent(req.query.args)
     : rawBody(req, {
       length: req.headers['content-length'],
-      limit: argsSizeLimit,
+      limit: argsMaxSize,
       encoding: contentType.parse(req).parameters.charset || 'utf-8',
     })
 }

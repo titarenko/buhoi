@@ -18,9 +18,16 @@ class ProtocolViolationError extends Error {
   }
 }
 
+class ProcedureTimeoutError extends Error {
+  constructor (feature, procedure) {
+    super(`Procedure ${procedure} of feature ${feature} took to much time to complete.`)
+  }
+}
+
 module.exports = {
   NotAuthorizedError,
   NotFoundError,
   ProtocolViolationError,
+  ProcedureTimeoutError,
   ValidationError: v.ValidationError,
 }
