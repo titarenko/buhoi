@@ -2,12 +2,15 @@ const mime = require('mime')
 
 module.exports = { session, file }
 
-function session (session) {
+function session (session, payload) {
   return function renderSession (res) {
     if (session == null) {
       res.clearSession()
     } else {
       res.setSession(session)
+    }
+    if (payload !== undefined) {
+      res.json(payload)
     }
     res.end()
   }
