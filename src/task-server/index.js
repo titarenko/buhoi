@@ -1,10 +1,13 @@
+const assert = require('assert')
 const glob = require('glob')
 const { scheduleJob } = require('node-schedule')
 const { mq } = require('../infra')
 
 module.exports = { start, stop }
 
-function start ({ featuresPath }) {
+function start ({ featuresPath } = { }) {
+  assert(typeof featuresPath, 'string')
+
   if (!mq || process.env.BUHOI_DISABLE_TASKS) {
     return
   }

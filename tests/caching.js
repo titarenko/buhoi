@@ -4,6 +4,12 @@ const Promise = require('bluebird')
 const request = Promise.promisify(require('request'))
 
 describe('buhoi caching', function () {
+  before(function () {
+    if (!process.env.BUHOI_REDIS) {
+      this.skip()
+    }
+  })
+
   it('should cache results if requested', async function () {
     const get = () => request({
       url: 'https://localhost:3001/rpc/todos.cachedPublicProcedure',
@@ -14,7 +20,7 @@ describe('buhoi caching', function () {
     })
     const response1 = await get()
     const response2 = await get()
-    await Promise.delay(200)
+    await Promise.delay(1100)
     const response3 = await get()
     response1.body.should.eql(response2.body)
     response2.body.should.not.eql(response3.body)

@@ -10,6 +10,7 @@ module.exports = function errorHandler ({
   assert(Error.isPrototypeOf(ValidationError))
   assert(Error.isPrototypeOf(NotAuthorizedError))
   assert(Error.isPrototypeOf(NotFoundError))
+  assert(Error.isPrototypeOf(ProcedureTimeoutError))
 
   return function errorHandlerMiddleware (error, req, res, next) {
     switch (true) {

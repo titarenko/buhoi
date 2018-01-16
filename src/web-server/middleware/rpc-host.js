@@ -1,9 +1,8 @@
 const assert = require('assert')
 const { Router } = require('express')
-const memoizee = require('memoizee')
 const rawBody = require('raw-body')
 const contentType = require('content-type')
-const lruCache = require('lru-cache')
+const { cache } = require('../../infra')
 
 module.exports = function rpcHost (options) {
   const router = Router()
@@ -25,13 +24,8 @@ function createHandler ({
   authorizationCacheDuration,
 
   resolveProcedure,
-  resolutionCacheDuration,
-
   getContext,
-  contextCacheDuration,
-
-  argsMaxSize,
-  resultCacheSize,
+  maxInputSize,
 
   NotAuthorizedError,
   NotFoundError,
@@ -42,65 +36,46 @@ function createHandler ({
   assert(Number.isInteger(authorizationCacheDuration))
 
   assert.equal(typeof resolveProcedure, 'function')
-  assert(Number.isInteger(resolutionCacheDuration) || resolutionCacheDuration === undefined)
-
   assert.equal(typeof getContext, 'function')
-  assert(Number.isInteger(contextCacheDuration) || contextCacheDuration === undefined)
-
-  assert.equal(typeof argsMaxSize, 'string') // '1mb'
-  assert(Number.isInteger(resultCacheSize))
+  assert.equal(typeof maxInputSize, 'string') // '1mb'
 
   assert(Error.isPrototypeOf(NotAuthorizedError))
   assert(Error.isPrototypeOf(NotFoundError))
   assert(Error.isPrototypeOf(ProtocolViolationError))
   assert(Error.isPrototypeOf(ProcedureTimeoutError))
 
-  const cache = {
-    isAuthorized: memoizee(isAuthorized, {
-      primitive: true,
-      maxAge: authorizationCacheDuration,
-    }),
-    resolveProcedure: memoizee(resolveProcedure, {
-      primitive: true,
-      maxAge: resolutionCacheDuration,
-    }),
-    getContext: memoizee(getContext, {
-      primitive: true,
-      maxAge: contextCacheDuration,
-    }),
-    getResult: lruCache({
-      max: resultCacheSize,
-    }),
-  }
+  const cachedIsAuthorized = cache.createCachedFunction(isAuthorized, authorizationCacheDuration)
+  const cachedGetContext = cache.createCachedFunction(getContext, authorizationCacheDuration)
 
   return async function handle (req, res) {
     const { session } = req
     const { feature, procedure } = req.params
 
-    if (!await cache.isAuthorized(session, feature, procedure)) {
+    if (!await cachedIsAuthorized(session, feature, procedure)) {
       throw new NotAuthorizedError(session, feature, procedure)
     }
 
-    const instance = cache.resolveProcedure(feature, procedure)
+    const instance = resolveProcedure(feature, procedure)
     if (!instance || !instance.public) {
       throw new NotFoundError(feature, procedure)
     }
 
-    const argsJson = await getArgsJson(req, argsMaxSize)
+    const argsJson = await getArgsJson(req, maxInputSize)
 
     const cachedResultKey = instance.cache
       ? [session, feature, procedure, argsJson].join(';')
       : undefined
 
-    if (cache.getResult.has(cachedResultKey)) {
-      render(cache.getResult.get(cachedResultKey), res)
+    const cachedResultValue = await cache.get(cachedResultKey)
+    if (cachedResultValue !== undefined) {
+      render(cachedResultValue, res)
     } else {
       const args = getArgs(argsJson, ProtocolViolationError)
-      const context = await cache.getContext(session)
+      const context = await cachedGetContext(session)
       try {
         const result = await instance.body.call(context, ...args, req, res)
         if (instance.cache) {
-          cache.getResult.set(cachedResultKey, result, instance.cache)
+          cache.set(cachedResultKey, result, instance.cache)
         }
         render(result, res)
       } catch (e) {
@@ -114,12 +89,12 @@ function createHandler ({
   }
 }
 
-function getArgsJson (req, argsMaxSize) {
+function getArgsJson (req, maxInputSize) {
   return req.method === 'GET'
     ? req.query.args && decodeURIComponent(req.query.args)
     : rawBody(req, {
       length: req.headers['content-length'],
-      limit: argsMaxSize,
+      limit: maxInputSize,
       encoding: contentType.parse(req).parameters.charset || 'utf-8',
     })
 }

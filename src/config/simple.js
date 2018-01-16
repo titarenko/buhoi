@@ -18,17 +18,11 @@ module.exports = function createSimpleConfig ({
     webpackConfigPath,
     rpc: {
       isAuthorized,
-      authorizationCacheDuration: humanInterval(process.env.BUHOI_AUTH_CACHE_DURATION || '2 seconds'),
+      authorizationCacheDuration: humanInterval(process.env.BUHOI_AUTH_CACHE_DURATION || '1 minute'),
 
+      maxInputSize: process.env.BUHOI_MAX_INPUT_SIZE || '10mb',
       resolveProcedure: createResolveProcedure(featuresPath),
-      resolutionCacheDuration: undefined,
-
       getContext: () => null,
-      contextCacheDuration: undefined,
-
-      argsMaxSize: process.env.BUHOI_ARGS_MAX_SIZE || '10mb',
-
-      resultCacheSize: process.env.BUHOI_RESULT_CACHE_SIZE || 10000,
     },
   }
 }
