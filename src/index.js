@@ -1,7 +1,7 @@
 const config = require('./config')
 const infra = require('./infra')
 const webServer = require('./web-server')
-const rpcResults = require('./web-server/rpc-results')
+const results = require('./web-server/results')
 const taskServer = require('./task-server')
 
 module.exports = {
@@ -16,8 +16,8 @@ module.exports = {
   v: infra.v,
   webpack: infra.webpack,
 
-  file: rpcResults.file,
-  session: rpcResults.session,
+  file: results.file,
+  session: results.session,
 }
 
 function start (options) {

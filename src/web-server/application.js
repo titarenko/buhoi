@@ -1,21 +1,17 @@
+const assert = require('assert')
 const express = require('express')
-const rpcErrors = require('./rpc-errors')
-const { v } = require('../infra')
+const errors = require('./errors')
 
 module.exports = { create, dispose }
 
-const validateOptions = v.create({
-  publicPath: v.required(v.string({ min: 1 })),
-  webpackConfigPath: v.required(v.string({ min: 1 })),
-  rpc: v.required(),
-})
-
-function create (options) {
-  const {
-    publicPath,
-    webpackConfigPath,
-    rpc,
-  } = validateOptions(options)
+function create ({
+  publicPath,
+  webpackConfigPath,
+  rpc,
+} = { }) {
+  assert.equal(typeof publicPath, 'string')
+  assert.equal(typeof webpackConfigPath, 'string')
+  assert.equal(typeof rpc, 'object')
 
   const app = express()
 
@@ -26,10 +22,10 @@ function create (options) {
   app.use(require('./middleware/letsencrypt-webroot')())
   app.use(webpackHotDevServer)
   app.use(require('./middleware/session')())
-  app.use(require('./middleware/rpc-host')({ ...rpc, ...rpcErrors }))
+  app.use(require('./middleware/rpc-host')({ ...rpc, ...errors }))
   app.use(express.static(publicPath))
   app.use(require('./middleware/html5-history-fallback')(publicPath))
-  app.use(require('./middleware/error-handler')(rpcErrors))
+  app.use(require('./middleware/error-handler')(errors))
 
   return app
 }

@@ -1,28 +1,13 @@
+const assert = require('assert')
 const { Router } = require('express')
 const memoizee = require('memoizee')
 const rawBody = require('raw-body')
 const contentType = require('content-type')
 const lruCache = require('lru-cache')
-const { v } = require('../../infra')
-
-const validateOptions = v.create({
-  isAuthorized: v.required(v.function({ exactly: 3 })),
-  authorizationCacheDuration: v.required(v.integer({ min: 10 })),
-
-  resolveProcedure: v.required(v.function({ exactly: 3 })),
-  resolutionCacheDuration: v.required(v.integer({ min: 10 })),
-
-  getContext: v.required(v.function({ min: 3 })),
-  contextCacheDuration: v.required(v.integer({ min: 10 })),
-
-  argsMaxSize: v.required(v.string({ min: 3 })),
-
-  resultCacheSize: v.required(v.integer({ min: 100 })),
-})
 
 module.exports = function rpcHost (options) {
   const router = Router()
-  const handler = createHandler(validateOptions(options))
+  const handler = createHandler(options)
 
   router.use('/rpc/:feature.:procedure', async function (req, res, next) {
     try {
@@ -52,7 +37,24 @@ function createHandler ({
   NotFoundError,
   ProtocolViolationError,
   ProcedureTimeoutError,
-}) {
+} = { }) {
+  assert.equal(typeof isAuthorized, 'function')
+  assert(Number.isInteger(authorizationCacheDuration))
+
+  assert.equal(typeof resolveProcedure, 'function')
+  assert(Number.isInteger(resolutionCacheDuration) || resolutionCacheDuration === undefined)
+
+  assert.equal(typeof getContext, 'function')
+  assert(Number.isInteger(contextCacheDuration) || contextCacheDuration === undefined)
+
+  assert.equal(typeof argsMaxSize, 'string') // '1mb'
+  assert(Number.isInteger(resultCacheSize))
+
+  assert(Error.isPrototypeOf(NotAuthorizedError))
+  assert(Error.isPrototypeOf(NotFoundError))
+  assert(Error.isPrototypeOf(ProtocolViolationError))
+  assert(Error.isPrototypeOf(ProcedureTimeoutError))
+
   const cache = {
     isAuthorized: memoizee(isAuthorized, {
       primitive: true,

@@ -1,47 +1,35 @@
+const assert = require('assert')
 const glob = require('glob')
 const humanInterval = require('human-interval')
-const { v } = require('../infra')
 
-const validateOptions = v.create({
-  featuresPath: v.string({ min: 1 }),
-  publicPath: v.string({ min: 1 }),
-  webpackConfigPath: v.string({ min: 1 }),
-  isAuthorized: v.required(v.function({ exactly: 3 })),
-})
+const projectPath = `${__dirname}/../../..`
 
-module.exports = function createSimpleConfig (options = { }) {
-  const projectPath = `${__dirname}/../../..`
-  try {
-    const {
-      featuresPath = `${projectPath}/features`,
-      publicPath = `${projectPath}/ui/public`,
-      webpackConfigPath = `${projectPath}/ui/webpack.config.js`,
+module.exports = function createSimpleConfig ({
+  featuresPath = `${projectPath}/features`,
+  publicPath = `${projectPath}/ui/public`,
+  webpackConfigPath = `${projectPath}/ui/webpack.config.js`,
+  isAuthorized,
+} = { }) {
+  assert.equal(typeof isAuthorized, 'function')
+
+  return {
+    featuresPath,
+    publicPath,
+    webpackConfigPath,
+    rpc: {
       isAuthorized,
-    } = validateOptions(options)
-    return {
-      featuresPath,
-      publicPath,
-      webpackConfigPath,
-      rpc: {
-        isAuthorized,
-        authorizationCacheDuration: humanInterval(process.env.BUHOI_AUTH_CACHE_DURATION || '1 minute'),
+      authorizationCacheDuration: humanInterval(process.env.BUHOI_AUTH_CACHE_DURATION || '2 seconds'),
 
-        resolveProcedure: createResolveProcedure(featuresPath),
-        resolutionCacheDuration: humanInterval('1 year'),
+      resolveProcedure: createResolveProcedure(featuresPath),
+      resolutionCacheDuration: undefined,
 
-        getContext: () => null,
-        contextCacheDuration: humanInterval('1 year'),
+      getContext: () => null,
+      contextCacheDuration: undefined,
 
-        argsMaxSize: process.env.BUHOI_ARGS_MAX_SIZE || '10mb',
+      argsMaxSize: process.env.BUHOI_ARGS_MAX_SIZE || '10mb',
 
-        resultCacheSize: process.env.BUHOI_RESULT_CACHE_SIZE || 10000,
-      },
-    }
-  } catch (e) {
-    if (e instanceof v.ValidationError) {
-      const invalidOptions = Object.keys(e.toJSON())
-      throw new Error(`Option ${invalidOptions[0]} has invalid value.`)
-    }
+      resultCacheSize: process.env.BUHOI_RESULT_CACHE_SIZE || 10000,
+    },
   }
 }
 
