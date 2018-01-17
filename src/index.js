@@ -4,21 +4,10 @@ const webServer = require('./web-server')
 const results = require('./web-server/results')
 const taskServer = require('./task-server')
 
-module.exports = {
-  config,
+const infraPublics = ['pg', 'mq', 'log', 'v', 'webpack']
+const resultsPublics = ['file', 'session']
 
-  start,
-  stop,
-
-  pg: infra.pg,
-  mq: infra.mq,
-  log: infra.log,
-  v: infra.v,
-  webpack: infra.webpack,
-
-  file: results.file,
-  session: results.session,
-}
+module.exports = new Proxy({ config, start, stop }, { get })
 
 function start (options) {
   infra.initialize()
@@ -33,4 +22,10 @@ async function stop () {
     taskServer.stop(),
   ])
   await infra.terminate()
+}
+
+function get (target, name) {
+  return target[name] ||
+    infraPublics.includes(name) && infra[name] ||
+    resultsPublics.includes(name) && results[name]
 }
