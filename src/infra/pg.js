@@ -13,10 +13,10 @@ function initialize () {
 
   if (BUHOI_APP) {
     pg.modify = (user, fn) => pg.transaction(async t => {
-      await pg('pg_settings')
-        .transacting(t)
-        .update({ setting: user.id })
-        .where({ name: `${BUHOI_APP}.current_user_id` })
+      await pg.raw('select set_config(:name, :value, false)', {
+        name: `${BUHOI_APP}.current_user_id`,
+        value: user.id,
+      }).transacting(t)
       await fn(t)
     })
   }
