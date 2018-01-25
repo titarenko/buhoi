@@ -45,7 +45,15 @@ function createHttpsTransport (app) {
 }
 
 function createHttpTransport (app) {
-  return httpShutdown(http.createServer(app))
+  const {
+    BUHOI_PORTS = process.env.NODE_ENV === 'development' ? '3000' : '80',
+  } = process.env
+
+  const carrier = httpShutdown(http.createServer(app))
+
+  carrier.listen(BUHOI_PORTS)
+
+  return { carrier }
 }
 
 function createRedirector () {
