@@ -7,6 +7,26 @@ const httpShutdown = require('http-shutdown')
 module.exports = { create, dispose }
 
 function create (app) {
+  if (process.env.NODE_ENV === 'development' || process.env.BUHOI_CERTS_PATH) {
+    return createHttpsTransport(app)
+  } else {
+    return createHttpTransport(app)
+  }
+}
+
+function dispose (transport) {
+  if (transport.redirector) {
+    return new Promise(
+      resolve => transport.redirector.shutdown(
+        () => transport.carrier.shutdown(resolve)
+      )
+    )
+  } else {
+    return new Promise(resolve => transport.carrier.shutdown(resolve))
+  }
+}
+
+function createHttpsTransport (app) {
   const {
     BUHOI_PORTS = process.env.NODE_ENV === 'development'
       ? '3000;3001'
@@ -24,12 +44,8 @@ function create (app) {
   return { redirector, carrier }
 }
 
-function dispose ({ carrier, redirector }) {
-  return new Promise(
-    resolve => redirector.shutdown(
-      () => carrier.shutdown(resolve)
-    )
-  )
+function createHttpTransport (app) {
+  return httpShutdown(http.createServer(app))
 }
 
 function createRedirector () {

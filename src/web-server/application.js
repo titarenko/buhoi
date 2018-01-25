@@ -4,7 +4,21 @@ const errors = require('./errors')
 
 module.exports = { create, dispose }
 
-function create ({
+function create (options) {
+  if (process.env.NODE_ENV === 'development' || process.env.BUHOI_CERTS_PATH) {
+    return createNormalApp(options)
+  } else {
+    return createWebrootApp(options)
+  }
+}
+
+function dispose (app) {
+  if (app.webpackHotDevServer) {
+    return app.webpackHotDevServer.dispose()
+  }
+}
+
+function createNormalApp ({
   publicPath,
   webpackConfigPath,
   rpc,
@@ -30,6 +44,8 @@ function create ({
   return app
 }
 
-function dispose (app) {
-  return app.webpackHotDevServer.dispose()
+function createWebrootApp (options) {
+  const app = express()
+  app.use(require('./middleware/letsencrypt-webroot')())
+  return app
 }
