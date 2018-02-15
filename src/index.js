@@ -9,8 +9,8 @@ const resultsPublics = ['file', 'session']
 
 module.exports = new Proxy({ config, start, stop }, { get })
 
-function start (options) {
-  infra.initialize()
+async function start (options) {
+  await infra.initialize()
 
   webServer.start(options)
   taskServer.start(options)

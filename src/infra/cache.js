@@ -14,9 +14,9 @@ function initialize () {
   }
 }
 
-function terminate (client) {
-  if (client) {
-    return client.quit()
+function terminate (instance) {
+  if (instance && instance.client) {
+    return instance.client.quit()
   }
 }
 
@@ -39,6 +39,7 @@ async function get (key) {
   }
 
   const value = await client.getAsync(key)
+
   if (value === null) {
     return
   }

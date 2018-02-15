@@ -2,7 +2,6 @@ const assert = require('assert')
 const { Router } = require('express')
 const rawBody = require('raw-body')
 const contentType = require('content-type')
-const { cache } = require('../../infra')
 
 module.exports = function rpcHost (options) {
   const router = Router()
@@ -32,6 +31,8 @@ function createHandler ({
   ProtocolViolationError,
   ProcedureTimeoutError,
 } = { }) {
+  const { cache } = require('../../infra')
+
   assert.equal(typeof isAuthorized, 'function')
   assert(Number.isInteger(authorizationCacheDuration))
 

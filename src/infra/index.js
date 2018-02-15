@@ -14,7 +14,7 @@ async function initialize () {
     pg.initialize(),
     mq.initialize(),
     cache.initialize(),
-  ]).then(([pg, mq, cache]) => {
+  ]).then(([pg, mq, _]) => {
     module.exports.pg = pg
     module.exports.mq = mq
     module.exports.cache = cache
