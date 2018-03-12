@@ -20,7 +20,13 @@ function start ({ featuresPath } = { }) {
     instance: require(`${featuresPath}/${path}`),
   }))
 
-  tasks.forEach(({ name, instance: { handler } }) => mq.consumeJob(name, handler))
+  tasks.forEach(({ name, instance: { event, handler } }) => {
+    if (event) {
+      mq.consumeEvent(event, handler)
+    } else {
+      mq.consumeJob(name, handler)
+    }
+  })
 
   mq.consumeJob('schedule', () => new Promise((resolve, reject) => {
     tasks.forEach(({ name, instance: { schedule } }) =>

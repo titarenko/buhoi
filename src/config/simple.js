@@ -5,6 +5,7 @@ const humanInterval = require('human-interval')
 const projectPath = `${__dirname}/../../..`
 
 module.exports = function createSimpleConfig ({
+  prerouter,
   featuresPath = `${projectPath}/features`,
   publicPath = `${projectPath}/ui/public`,
   webpackConfigPath = `${projectPath}/ui/webpack.config.js`,
@@ -13,6 +14,7 @@ module.exports = function createSimpleConfig ({
   assert.equal(typeof isAuthorized, 'function')
 
   return {
+    prerouter,
     featuresPath,
     publicPath,
     webpackConfigPath,

@@ -19,6 +19,7 @@ function dispose (app) {
 }
 
 function createNormalApp ({
+  prerouter,
   publicPath,
   webpackConfigPath,
   rpc,
@@ -33,6 +34,9 @@ function createNormalApp ({
   app.webpackHotDevServer = webpackHotDevServer
 
   app.use(require('./middleware/access-log')({ category: __filename }))
+  if (prerouter) {
+    app.use(prerouter)
+  }
   app.use(require('./middleware/letsencrypt-webroot')())
   app.use(webpackHotDevServer)
   app.use(require('./middleware/session')())
