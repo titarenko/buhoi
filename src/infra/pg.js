@@ -9,13 +9,14 @@ function initialize () {
     return
   }
 
+  const poolSize = process.env.BUHOI_PG_POOL != null
+    ? Number(process.env.BUHOI_PG_POOL)
+    : undefined
+
   const pg = knex({
     client: 'pg',
     connection: BUHOI_PG,
-    pool: {
-      min: process.env.BUHOI_PG_POOL || 2,
-      max: process.env.BUHOI_PG_POOL || 10,
-    },
+    pool: poolSize && { min: poolSize, max: poolSize },
   })
 
   if (BUHOI_APP) {
