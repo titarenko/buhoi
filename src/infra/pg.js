@@ -9,7 +9,14 @@ function initialize () {
     return
   }
 
-  const pg = knex({ client: 'pg', connection: BUHOI_PG })
+  const pg = knex({
+    client: 'pg',
+    connection: BUHOI_PG,
+    pool: {
+      min: process.env.BUHOI_PG_POOL || 2,
+      max: process.env.BUHOI_PG_POOL || 10,
+    },
+  })
 
   if (BUHOI_APP) {
     pg.modify = (user, fn) => pg.transaction(async t => {
