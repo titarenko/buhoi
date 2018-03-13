@@ -30,7 +30,7 @@ function start ({ featuresPath } = { }) {
 
   mq.consumeJob('schedule', () => new Promise((resolve, reject) => {
     tasks.forEach(({ name, instance: { schedule } }) =>
-      scheduleJob(schedule, () => mq.publishJob(name))
+      schedule && scheduleJob(schedule, () => mq.publishJob(name))
     )
   }))
 }
