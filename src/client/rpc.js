@@ -31,6 +31,16 @@ export class RequestTimeoutError extends HttpError {
 export class ServerError extends HttpError {
 }
 
+const errorInterceptors = []
+
+export function interceptError (fn) {
+  if (typeof fn === 'function') {
+    errorInterceptors.push(fn)
+  } else {
+    throw new Error('interceptor must be a function')
+  }
+}
+
 export function get (procedure, ...args) {
   return request({
     method: 'GET',
@@ -48,6 +58,9 @@ export function post (procedure, ...args) {
 }
 
 function handleResponseStatusCode (response) {
+  if (response.statusCode >= 400) {
+    errorInterceptors.forEach(i => i(response))
+  }
   switch (response.statusCode) {
     case 400:
       throw new ValidationError(response)
