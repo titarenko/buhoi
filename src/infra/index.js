@@ -9,7 +9,7 @@ const webpack = require('./webpack')
 module.exports = { initialize, terminate, v: korrekt, webpack, cache }
 
 async function initialize () {
-  module.exports.log = await log.initialize()
+  module.exports.log = log.initialize()
   await Promise.all([
     pg.initialize(),
     mq.initialize(),

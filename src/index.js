@@ -7,11 +7,11 @@ const taskServer = require('./task-server')
 const infraPublics = ['pg', 'mq', 'log', 'v', 'webpack']
 const resultsPublics = ['file', 'session']
 
+infra.initialize()
+
 module.exports = new Proxy({ config, start, stop }, { get })
 
 async function start (options) {
-  await infra.initialize()
-
   webServer.start(options)
   taskServer.start(options)
 }
