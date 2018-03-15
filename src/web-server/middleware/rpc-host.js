@@ -26,6 +26,7 @@ function createHandler ({
   getContext,
   maxInputSize,
 
+  NotAuthenticatedError,
   NotAuthorizedError,
   NotFoundError,
   ProtocolViolationError,
@@ -38,8 +39,9 @@ function createHandler ({
 
   assert.equal(typeof resolveProcedure, 'function')
   assert.equal(typeof getContext, 'function')
-  assert.equal(typeof maxInputSize, 'string') // '1mb'
+  assert.equal(typeof maxInputSize, 'string') // for example, '1mb'
 
+  assert(Error.isPrototypeOf(NotAuthenticatedError))
   assert(Error.isPrototypeOf(NotAuthorizedError))
   assert(Error.isPrototypeOf(NotFoundError))
   assert(Error.isPrototypeOf(ProtocolViolationError))
@@ -53,7 +55,11 @@ function createHandler ({
     const { feature, procedure } = req.params
 
     if (!await cachedIsAuthorized(session, feature, procedure)) {
-      throw new NotAuthorizedError(session, feature, procedure)
+      if (!session) {
+        throw new NotAuthenticatedError()
+      } else {
+        throw new NotAuthorizedError(session, feature, procedure)
+      }
     }
 
     const instance = resolveProcedure(feature, procedure)
@@ -80,7 +86,7 @@ function createHandler ({
         }
         render(result, res)
       } catch (e) {
-        if (e.message.includes('statement cancelled due to statement timeout')) {
+        if (e.message.includes('canceling statement due to statement timeout')) {
           throw new ProcedureTimeoutError(feature, procedure)
         } else {
           throw e

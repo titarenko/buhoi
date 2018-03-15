@@ -1,5 +1,11 @@
 const v = require('korrekt')
 
+class NotAuthenticatedError extends Error {
+  constructor () {
+    super('Session is missing.')
+  }
+}
+
 class NotAuthorizedError extends Error {
   constructor (session, feature, procedure) {
     super(`Session ${session} is not allowed to call ${feature}.${procedure}.`)
@@ -25,6 +31,7 @@ class ProcedureTimeoutError extends Error {
 }
 
 module.exports = {
+  NotAuthenticatedError,
   NotAuthorizedError,
   NotFoundError,
   ProtocolViolationError,
