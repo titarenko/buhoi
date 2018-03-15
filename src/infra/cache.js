@@ -10,8 +10,10 @@ function initialize () {
   const { BUHOI_REDIS } = process.env
 
   if (BUHOI_REDIS) {
-    return module.exports.client = redis.createClient(BUHOI_REDIS)
+    module.exports.client = redis.createClient(BUHOI_REDIS)
   }
+
+  return module.exports
 }
 
 function terminate (instance) {

@@ -6,7 +6,7 @@ const mq = require('./mq')
 const cache = require('./cache')
 const webpack = require('./webpack')
 
-module.exports = { initialize, terminate, v: korrekt, webpack, cache }
+module.exports = { initialize, terminate, v: korrekt, webpack }
 
 function initialize () {
   module.exports.log = log.initialize()
