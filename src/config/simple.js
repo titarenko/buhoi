@@ -10,6 +10,7 @@ module.exports = function createSimpleConfig ({
   publicPath = `${projectPath}/ui/public`,
   webpackConfigPath = `${projectPath}/ui/webpack.config.js`,
   isAuthorized,
+  getContext = () => null,
 } = { }) {
   assert.equal(typeof isAuthorized, 'function')
 
@@ -24,7 +25,7 @@ module.exports = function createSimpleConfig ({
 
       maxInputSize: process.env.BUHOI_MAX_INPUT_SIZE || '10mb',
       resolveProcedure: createResolveProcedure(featuresPath),
-      getContext: () => null,
+      getContext,
     },
   }
 }
