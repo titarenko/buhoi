@@ -13,7 +13,13 @@ Buhoi is an application server allowing you to write robust full-featured web-ap
 
 | name | required | purpose | format | example |
 | --- | --- | --- | --- | --- |
+| BUHOI_CERTS_PATH | production | specifies path to directory with ssl certificates, make sure you have dhparams there (`openssl dhparam -out dhparam.pem 4096`) | /dir | /var/lib/letsencrypt/my.site.com |
+| BUHOI_PORTS | no | overrides web server ports | http;https | 3000;3001 |
+| BUHOI_PG | no | PostgreSQL connection string | if provided, then knex instance will be created and exposed | postgres://user:password@host:port/db | |
+| BUHOI_PG_POOL | no | size of connection pool for PostgreSQL | integer | 100 |
+| BUHOI_MQ | no | RabbitMQ connection string | if provided, mqu instance will be created and exposed | amqp://user:password@host:port/vhost | |
+| BUHOI_REDIS | no | if provided, caching will be enabled | redis://host | |
+| BUHOI_AUTH_CACHE_DURATION | no | RPC authentication cache duration | time in human readable format | 1 minute |
+| BUHOI_MAX_INPUT_SIZE | no | max size of RPC request | size | 10mb |
 | BUHOI_SLACK | no | slack token and channel to post error messages | token;channel;icon | xoxb-...;alerts;:hideyourpain: |
 | BUHOI_LOGSTASH | no | logstash UDP socket to send each log message | udp://ip:port | udp://192.168.1.10:5000 |
-| BUHOI_PORTS | no | overrides web server ports | http;https | 3000;3001 |
-| BUHOI_CERTS_PATH | production | specifies path to directory with ssl certificates, make sure you have dhparams there (`openssl dhparam -out dhparam.pem 4096`) | /dir | /var/lib/letsencrypt/my.site.com |
