@@ -15,7 +15,7 @@ describe('buhoi authorization', function () {
       timeout: 1000,
     })
     secrets.getSecretSpy.calledOnce.should.eql(false)
-    statusCode.should.eql(403)
+    statusCode.should.eql(401)
     true.should.eql(body === undefined)
   })
 
