@@ -20,6 +20,7 @@ module.exports = { initialize, terminate, v: korrekt, webpack }
 
 function initialize () {
   module.exports.log = log.initialize()
+  module.exports.mklog = log.initialize()
   module.exports.pg = pg.initialize()
   module.exports.mq = mq.initialize()
   module.exports.cache = cache.initialize()

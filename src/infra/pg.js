@@ -25,7 +25,7 @@ function initialize () {
         name: `${BUHOI_APP}.current_user_id`,
         value: user.id,
       }).transacting(t)
-      await fn(t)
+      return fn(t)
     })
   }
 
