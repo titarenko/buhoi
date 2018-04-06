@@ -49,6 +49,11 @@ export function get (procedure, ...args) {
   }).then(handleResponseStatusCode)
 }
 
+export function download (procedure, ...args) {
+  const qs = { args: encodeURIComponent(JSON.stringify(args)) }
+  return window.open(`/rpc/${procedure}?${querystring.stringify(qs)}`)
+}
+
 export function post (procedure, ...args) {
   return request({
     method: 'POST',
