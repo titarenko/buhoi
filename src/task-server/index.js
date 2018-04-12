@@ -22,7 +22,11 @@ function start ({ featuresPath } = { }) {
 
   tasks.forEach(({ name, instance: { event, handler } }) => {
     if (event) {
-      mq.consumeEvent(event, handler)
+      if (process.env.BUHOI_PERSISTENT_EVENTS) {
+        mq.consumePersistentEvent(event, name, handler)
+      } else {
+        mq.consumeEvent(event, handler)
+      }
     } else {
       mq.consumeJob(name, handler)
     }
