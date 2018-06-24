@@ -25,7 +25,6 @@ function createNormalApp ({
   rpc,
 } = { }) {
   assert.equal(typeof publicPath, 'string')
-  assert.equal(typeof webpackConfigPath, 'string')
   assert.equal(typeof rpc, 'object')
 
   const app = express()

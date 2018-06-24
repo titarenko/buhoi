@@ -3,7 +3,7 @@ const { Router } = require('express')
 module.exports = function webpackHotDevServer (webpackConfigPath) {
   const router = Router()
 
-  if (process.env.NODE_ENV === 'development') {
+  if (webpackConfigPath && process.env.NODE_ENV === 'development') {
     const webpackDevMiddleware = require('webpack-dev-middleware')
     const webpackHotMiddleware = require('webpack-hot-middleware')
     const webpack = require('webpack')
