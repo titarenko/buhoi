@@ -1,6 +1,6 @@
 const mime = require('mime')
 
-module.exports = { session, file }
+module.exports = { session, file, stream }
 
 function session (session, payload) {
   return function renderSession (res) {
@@ -25,5 +25,14 @@ function file (name, content) {
       res.set('Content-Type', mime.getType(name))
       res.send(content)
     }
+  }
+}
+
+function stream (stream, headers) {
+  return function renderStream (res) {
+    if (headers) {
+      Object.keys(headers).forEach(k => res.set(k, headers[k]))
+    }
+    stream.pipe(res)
   }
 }
