@@ -54,10 +54,13 @@ function createHandler ({
     const { session } = req
     const { feature, procedure } = req.params
 
-    if (!await cachedIsAuthorized(session, feature, procedure)) {
-      if (!session) {
+    const isAuthorizedResult = await cachedIsAuthorized(session, feature, procedure)
+
+    if (!isAuthorizedResult) {
+      if (!session || isAuthorizedResult == null) {
         throw new NotAuthenticatedError()
-      } else {
+      }
+      if (!isAuthorizedResult) {
         throw new NotAuthorizedError(session, feature, procedure)
       }
     }
