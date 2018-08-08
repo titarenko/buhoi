@@ -104,6 +104,8 @@ function request ({ method = 'GET', url, headers = { }, qs, json }) {
 
     const instance = new XMLHttpRequest()
 
+    instance.withCredentials = true
+
     instance.onreadystatechange = () => {
       if (instance.readyState !== 4) {
         return
