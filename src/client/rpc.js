@@ -32,6 +32,11 @@ export class ServerError extends HttpError {
 }
 
 const errorInterceptors = []
+let baseUrl = ''
+
+export function changeBaseUrl (newBaseUrl) {
+  baseUrl = newBaseUrl || ''
+}
 
 export function interceptError (fn) {
   if (typeof fn === 'function') {
@@ -41,23 +46,27 @@ export function interceptError (fn) {
   }
 }
 
+export function getFullUrl (procedure, ...args) {
+  const qs = { args: encodeURIComponent(JSON.stringify(args)) }
+  return `${baseUrl}/rpc/${procedure}?${querystring.stringify(qs)}`
+}
+
 export function get (procedure, ...args) {
   return request({
     method: 'GET',
-    url: `/rpc/${procedure}`,
+    url: `${baseUrl}/rpc/${procedure}`,
     qs: { args: encodeURIComponent(JSON.stringify(args)) },
   }).then(handleResponseStatusCode)
 }
 
 export function download (procedure, ...args) {
-  const qs = { args: encodeURIComponent(JSON.stringify(args)) }
-  return window.open(`/rpc/${procedure}?${querystring.stringify(qs)}`)
+  return window.open(getFullUrl(procedure, ...args))
 }
 
 export function post (procedure, ...args) {
   return request({
     method: 'POST',
-    url: `/rpc/${procedure}`,
+    url: `${baseUrl}/rpc/${procedure}`,
     json: args,
   }).then(handleResponseStatusCode)
 }
