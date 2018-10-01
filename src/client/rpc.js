@@ -33,6 +33,23 @@ export class ServerError extends HttpError {
 
 const errorInterceptors = []
 let baseUrl = ''
+export const bridge = new Proxy({ }, {
+  get (target, feature) {
+    return createProcedureProxy(
+      feature.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+    )
+  },
+})
+
+function createProcedureProxy (feature) {
+  return new Proxy({ }, {
+    get (target, procedure) {
+      return procedure.startsWith('get')
+        ? (...args) => get(`${feature}.${procedure}`, ...args)
+        : (...args) => post(`${feature}.${procedure}`, ...args)
+    },
+  })
+}
 
 export function changeBaseUrl (newBaseUrl) {
   baseUrl = newBaseUrl || ''
