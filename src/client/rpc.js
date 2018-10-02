@@ -44,7 +44,7 @@ export const bridge = new Proxy({ }, {
 function createProcedureProxy (feature) {
   return new Proxy({ }, {
     get (target, procedure) {
-      return procedure.startsWith('get')
+      return procedure.startsWith('get') || procedure.startsWith('lookup')
         ? (...args) => get(`${feature}.${procedure}`, ...args)
         : (...args) => post(`${feature}.${procedure}`, ...args)
     },
