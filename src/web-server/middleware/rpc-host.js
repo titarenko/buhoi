@@ -105,8 +105,16 @@ function getArgsJson (req, maxInputSize) {
     : rawBody(req, {
       length: req.headers['content-length'],
       limit: maxInputSize,
-      encoding: contentType.parse(req).parameters.charset || 'utf-8',
+      encoding: getEncoding(req),
     })
+}
+
+function getEncoding (req, defaultEncoding = 'utf-8') {
+  try {
+    return contentType.parse(req).parameters.charset || defaultEncoding
+  } catch (e) {
+    return defaultEncoding
+  }
 }
 
 function getArgs (argsJson, ProtocolViolationError) {
