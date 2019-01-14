@@ -29,6 +29,7 @@ function initialize () {
         throw error
       }
     })
+    return instance
   }
 }
 
