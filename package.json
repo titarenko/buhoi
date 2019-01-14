@@ -1,6 +1,6 @@
 {
   "name": "buhoi",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Because drunk people can create web apps too.",
   "module": "src/client/index.js",
   "main": "src/index.js",
