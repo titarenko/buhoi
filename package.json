@@ -12,6 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.5.1",
+    "busboy": "^0.3.0",
+    "bytes": "^3.0.0",
     "content-type": "^1.0.4",
     "express": "^4.16.2",
     "http-shutdown": "^1.2.0",

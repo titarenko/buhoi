@@ -84,8 +84,16 @@ export function post (procedure, ...args) {
   return request({
     method: 'POST',
     url: `${baseUrl}/rpc/${procedure}`,
-    json: args,
+    [args.length === 1 && args[0] instanceof FormData ? 'form' : 'json']: args,
   }).then(handleResponseStatusCode)
+}
+
+export function form (obj) {
+  const data = new FormData()
+  for (let k of obj) {
+    data.append(k, obj[k])
+  }
+  return data
 }
 
 function handleResponseStatusCode (response) {
@@ -110,7 +118,7 @@ function handleResponseStatusCode (response) {
   }
 }
 
-function request ({ method = 'GET', url, headers = { }, qs, json }) {
+function request ({ method = 'GET', url, headers = { }, qs, json, form }) {
   return new Promise(send)
 
   function send (resolve, reject) {
@@ -138,6 +146,7 @@ function request ({ method = 'GET', url, headers = { }, qs, json }) {
             headers,
             qs,
             json,
+            form,
           },
           statusCode: instance.status,
           body: getResponseBody(instance),
@@ -152,6 +161,8 @@ function request ({ method = 'GET', url, headers = { }, qs, json }) {
     if (json) {
       instance.setRequestHeader('content-type', 'application/json')
       instance.send(JSON.stringify(json))
+    } else if (form) {
+      instance.send(form)
     } else {
       instance.send()
     }
