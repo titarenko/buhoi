@@ -81,16 +81,19 @@ export function download (procedure, ...args) {
 }
 
 export function post (procedure, ...args) {
+  const options = args.length === 1 && args[0] instanceof FormData
+    ? { form: args[0] }
+    : { json: args }
   return request({
     method: 'POST',
     url: `${baseUrl}/rpc/${procedure}`,
-    [args.length === 1 && args[0] instanceof FormData ? 'form' : 'json']: args,
+    ...options,
   }).then(handleResponseStatusCode)
 }
 
 export function form (obj) {
   const data = new FormData()
-  for (let k of obj) {
+  for (let k of Object.keys(obj)) {
     data.append(k, obj[k])
   }
   return data
@@ -159,7 +162,7 @@ function request ({ method = 'GET', url, headers = { }, qs, json, form }) {
     Object.entries(headers).map(pair => instance.setRequestHeader(...pair))
 
     if (json) {
-      instance.setRequestHeader('content-type', 'application/json')
+      instance.setRequestHeader('Content-Type', 'application/json')
       instance.send(JSON.stringify(json))
     } else if (form) {
       instance.send(form)
