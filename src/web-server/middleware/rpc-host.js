@@ -111,7 +111,7 @@ function createHandler ({
     }
 
     function handleError (error) {
-      if (error.message.includes('canceling statement due to statement timeout')) {
+      if (error && error.message && error.message.includes('canceling statement due to statement timeout')) {
         throw new ProcedureTimeoutError(feature, procedure)
       } else {
         throw error
