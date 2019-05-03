@@ -24,7 +24,7 @@ function createNormalApp ({
   webpackConfigPath,
   rpc,
 } = { }) {
-  assert.equal(typeof publicPath, 'string')
+  assert.ok(typeof publicPath === 'string' || publicPath === undefined, 'publicPath must be a string or undefined')
   assert.equal(typeof rpc, 'object')
 
   const app = express()
@@ -40,8 +40,10 @@ function createNormalApp ({
   app.use(webpackHotDevServer)
   app.use(require('./middleware/session')())
   app.use(require('./middleware/rpc-host')({ ...rpc, ...errors }))
-  app.use(express.static(publicPath))
-  app.use(require('./middleware/html5-history-fallback')(publicPath))
+  if (publicPath) {
+    app.use(express.static(publicPath))
+    app.use(require('./middleware/html5-history-fallback')(publicPath))
+  }
   app.use(require('./middleware/error-handler')(errors))
 
   return app
