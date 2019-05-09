@@ -20,6 +20,7 @@ function dispose (app) {
 
 function createNormalApp ({
   prerouter,
+  postrouter,
   publicPath,
   webpackConfigPath,
   rpc,
@@ -43,6 +44,9 @@ function createNormalApp ({
   if (publicPath) {
     app.use(express.static(publicPath))
     app.use(require('./middleware/html5-history-fallback')(publicPath))
+  }
+  if (postrouter) {
+    app.use(postrouter)
   }
   app.use(require('./middleware/error-handler')(errors))
 

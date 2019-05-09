@@ -6,6 +6,7 @@ const projectPath = `${__dirname}/../../..`
 
 module.exports = function createSimpleConfig ({
   prerouter,
+  postrouter,
   featuresPath = `${projectPath}/features`,
   publicPath = `${projectPath}/ui/public`,
   webpackConfigPath = `${projectPath}/ui/webpack.config.js`,
@@ -16,6 +17,7 @@ module.exports = function createSimpleConfig ({
 
   return {
     prerouter,
+    postrouter,
     featuresPath,
     publicPath,
     webpackConfigPath,
