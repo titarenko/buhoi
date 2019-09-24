@@ -23,7 +23,11 @@ function file (name, content) {
     } else {
       res.attachment(name)
       res.set('Content-Type', mime.getType(name))
-      res.send(content)
+      if (typeof content.pipe === 'function') {
+        content.pipe(res)
+      } else {
+        res.send(content)
+      }
     }
   }
 }
