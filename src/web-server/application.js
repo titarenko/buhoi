@@ -1,5 +1,6 @@
 const assert = require('assert')
 const express = require('express')
+const compression = require('compression')
 const errors = require('./errors')
 
 module.exports = { create, dispose }
@@ -29,6 +30,9 @@ function createNormalApp ({
   assert.equal(typeof rpc, 'object')
 
   const app = express()
+  if (!process.env.BUHOI_DISABLE_COMPRESSION) {
+    app.use(compression())
+  }
 
   const webpackHotDevServer = require('./middleware/webpack-hot-dev-server')(webpackConfigPath)
   app.webpackHotDevServer = webpackHotDevServer
