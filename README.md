@@ -14,7 +14,7 @@ Buhoi is an application server allowing you to write robust full-featured web-ap
 | name | required | purpose | format | example |
 | --- | --- | --- | --- | --- |
 | BUHOI_CERTS_PATH | production | specifies path to directory with ssl certificates, make sure you have dhparams there (`openssl dhparam -out dhparam.pem 4096`) | /dir | /var/lib/letsencrypt/my.site.com |
-| BUHOI_PORTS | no | overrides web server ports | http;https | 3000;3001 |
+| BUHOI_PORTS | no | overrides web server ports (to listen on 80, 443 you need to `setcap 'cap_net_bind_service=+ep' /path/to/node`) | http;https | 3000;3001 |
 | BUHOI_PG | no | PostgreSQL connection string | if provided, then knex instance will be created and exposed | postgres://user:password@host:port/db | |
 | BUHOI_PG_POOL | no | size of connection pool for PostgreSQL | integer | 100 |
 | BUHOI_MQ | no | RabbitMQ connection string | if provided, mqu instance will be created and exposed | amqp://user:password@host:port/vhost | |
