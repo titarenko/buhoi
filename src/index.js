@@ -4,7 +4,7 @@ const webServer = require('./web-server')
 const results = require('./web-server/results')
 const taskServer = require('./task-server')
 
-const infraPublics = ['pg', 'mq', 'log', 'mklog', 'v', 'webpack', 'request']
+const infraPublics = ['pg', 'mq', 'log', 'mklog', 'v', 'webpack', 'request', 'cache']
 const resultsPublics = ['file', 'session', 'stream']
 
 infra.initialize()
