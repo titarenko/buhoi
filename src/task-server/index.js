@@ -12,6 +12,8 @@ function start ({ featuresPath } = { }) {
     return
   }
 
+  const MessageHandlerFailureError = require('../infra/mq').MessageHandlerFailureError
+
   const tasks = glob.sync('**/tasks/*.js', { cwd: featuresPath }).map(path => ({
     name: path
       .replace('/tasks', '')
@@ -21,14 +23,25 @@ function start ({ featuresPath } = { }) {
   }))
 
   tasks.forEach(({ name, instance: { event, handler } }) => {
+    async function wrappedHandler (...args) {
+      try {
+        return await handler.apply(this, args)
+      } catch (error) {
+        throw new MessageHandlerFailureError({
+          event,
+          task: name,
+          error,
+        })
+      }
+    }
     if (event) {
       if (process.env.BUHOI_PERSISTENT_EVENTS) {
-        mq.consumePersistentEvent(event, name, handler)
+        mq.consumePersistentEvent(event, name, wrappedHandler)
       } else {
-        mq.consumeEvent(event, handler)
+        mq.consumeEvent(event, wrappedHandler)
       }
     } else {
-      mq.consumeJob(name, handler)
+      mq.consumeJob(name, wrappedHandler)
     }
   })
 

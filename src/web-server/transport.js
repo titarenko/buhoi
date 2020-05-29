@@ -49,7 +49,11 @@ function createHttpTransport (app) {
     BUHOI_PORTS = process.env.NODE_ENV === 'development' ? '3000' : '80',
   } = process.env
 
-  const carrier = httpShutdown(http.createServer(app))
+  const server = http.createServer(app)
+
+  server.keepAliveTimeout = getKeepAliveTimeout()
+
+  const carrier = httpShutdown(server)
 
   carrier.listen(BUHOI_PORTS)
 
@@ -76,11 +80,20 @@ function createCarrier (app) {
 
   const load = cert => fs.readFileSync(`${BUHOI_CERTS_PATH}/${cert}`)
 
-  return httpShutdown(https.createServer({
+  const server = https.createServer({
     key: load('privkey.pem'),
     cert: load('fullchain.pem'),
     ca: load('chain.pem'),
     dhparam: load('dh.pem'),
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2,
-  }, app))
+  }, app)
+
+  server.keepAliveTimeout = getKeepAliveTimeout()
+
+  return httpShutdown(server)
+}
+
+function getKeepAliveTimeout () {
+  const keepAliveTimeout = Number(process.env.BUHOI_KEEP_ALIVE_TIMEOUT)
+  return isNaN(keepAliveTimeout) ? 0 : keepAliveTimeout
 }
