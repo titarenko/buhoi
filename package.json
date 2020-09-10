@@ -17,7 +17,7 @@
     "compression": "^1.7.4",
     "content-type": "^1.0.4",
     "cookie": "^0.4.0",
-    "express": "^4.16.2",
+    "express": "^4.17.1",
     "glob": "^7.1.4",
     "http-shutdown": "^1.2.0",
     "human-interval": "^0.1.6",
