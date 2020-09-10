@@ -25,6 +25,7 @@ function createNormalApp ({
   publicPath,
   webpackConfigPath,
   rpc,
+  session,
 } = { }) {
   assert.ok(typeof publicPath === 'string' || publicPath === undefined, 'publicPath must be a string or undefined')
   assert.equal(typeof rpc, 'object')
@@ -43,7 +44,7 @@ function createNormalApp ({
   }
   app.use(require('./middleware/letsencrypt-webroot')())
   app.use(webpackHotDevServer)
-  app.use(require('./middleware/session')())
+  app.use(require('./middleware/session')(session))
   app.use(require('./middleware/rpc-host')({ ...rpc, ...errors }))
   if (publicPath) {
     app.use(express.static(publicPath))

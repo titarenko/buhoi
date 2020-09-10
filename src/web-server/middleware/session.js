@@ -2,12 +2,13 @@ const cookie = require('cookie')
 const memoizee = require('memoizee')
 const express = require('express')
 
-module.exports = function session ({ cookieName = 'doge' } = { }) {
+module.exports = function session ({ cookieName = 'doge', sameSite } = { }) {
   express.response.setSession = function setSession (session) {
     this.cookie(cookieName, session, {
       httpOnly: true,
       expires: 0,
       secure: true,
+      sameSite,
     })
   }
 
