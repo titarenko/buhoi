@@ -6,7 +6,7 @@ const errors = require('./errors')
 module.exports = { create, dispose }
 
 function create (options) {
-  if (process.env.NODE_ENV === 'development' || process.env.BUHOI_CERTS_PATH) {
+  if (process.env.NODE_ENV === 'development' || process.env.BUHOI_CERTS_PATH || process.env.BUHOI_PROXIED) {
     return createNormalApp(options)
   } else {
     return createWebrootApp(options)
