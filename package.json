@@ -21,7 +21,7 @@
     "glob": "^7.1.4",
     "http-shutdown": "^1.2.0",
     "human-interval": "^0.1.6",
-    "knex": "^0.21.17",
+    "knex": "^0.15.2",
     "korrekt": "^2.2.2",
     "lru-cache": "^4.1.1",
     "memoizee": "^0.4.11",
