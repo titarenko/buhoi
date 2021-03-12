@@ -22,7 +22,7 @@ function start ({ featuresPath } = { }) {
     instance: require(`${featuresPath}/${path}`),
   }))
 
-  tasks.forEach(({ name, instance: { event, handler } }) => {
+  tasks.forEach(({ name, instance: { event, handler, options, persistent } }) => {
     async function wrappedHandler (...args) {
       try {
         return await handler.apply(this, args)
@@ -35,13 +35,13 @@ function start ({ featuresPath } = { }) {
       }
     }
     if (event) {
-      if (process.env.BUHOI_PERSISTENT_EVENTS) {
-        mq.consumePersistentEvent(event, name, wrappedHandler)
+      if (process.env.BUHOI_PERSISTENT_EVENTS || persistent) {
+        mq.consumePersistentEvent(event, name, wrappedHandler, options)
       } else {
-        mq.consumeEvent(event, wrappedHandler)
+        mq.consumeEvent(event, wrappedHandler, options)
       }
     } else {
-      mq.consumeJob(name, wrappedHandler)
+      mq.consumeJob(name, wrappedHandler, options)
     }
   })
 
