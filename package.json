@@ -31,7 +31,7 @@
     "node-schedule": "^1.2.5",
     "pg": "^7.4.0",
     "raw-body": "^2.3.2",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "request": "^2.88.0",
     "totlog": "^2.1.1",
     "webpack": "^3.10.0"
