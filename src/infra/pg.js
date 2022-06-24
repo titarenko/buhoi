@@ -16,7 +16,7 @@ function initialize () {
   const pg = knex({
     client: 'pg',
     connection: BUHOI_PG,
-    pool: poolSize && { min: poolSize, max: poolSize },
+    pool: poolSize && { min: 0, max: poolSize },
   })
 
   if (BUHOI_APP) {
