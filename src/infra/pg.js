@@ -3,7 +3,7 @@ const knex = require('knex')
 module.exports = { initialize, terminate }
 
 function initialize () {
-  const { BUHOI_PG, BUHOI_APP } = process.env
+  const { BUHOI_PG, BUHOI_APP, BUHOI_PG_RO } = process.env
 
   if (!BUHOI_PG) {
     return
@@ -29,11 +29,22 @@ function initialize () {
     })
   }
 
+  if (BUHOI_PG_RO) {
+    pg.ro = knex({
+      client: 'pg',
+      connection: BUHOI_PG_RO,
+      pool: poolSize && { min: 0, max: poolSize },
+    })
+  }
+
   return pg
 }
 
 function terminate (pg) {
   if (pg) {
-    return new Promise(pg.destroy)
+    return new Promise(pg.ro
+      ? pg.ro.destroy
+      : r => r()
+    ).then(() => new Promise(pg.destroy))
   }
 }
