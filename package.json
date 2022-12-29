@@ -34,7 +34,7 @@
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "totlog": "^2.1.1",
-    "webpack": "^3.10.0"
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
     "@titarenko/eslint-config": "^1.0.3",
