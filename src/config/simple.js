@@ -1,5 +1,5 @@
 const assert = require('assert')
-const glob = require('glob')
+const { globSync } = require('glob')
 const humanInterval = require('human-interval')
 
 const projectPath = `${__dirname}/../../..`
@@ -33,7 +33,7 @@ module.exports = function createSimpleConfig ({
 }
 
 function createResolveProcedure (featuresPath) {
-  const registry = glob.sync('**/index.js', { cwd: featuresPath })
+  const registry = globSync('**/index.js', { cwd: featuresPath })
     .reduce((map, path) => ({
       ...map,
       [getFeatureName(path)]: loadFeature(featuresPath, path),

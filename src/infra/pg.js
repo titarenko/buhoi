@@ -43,8 +43,18 @@ function initialize () {
 function terminate (pg) {
   if (pg) {
     return new Promise(pg.ro
-      ? pg.ro.destroy
+      ? destroyPg(pg.ro)
       : r => r()
-    ).then(() => new Promise(pg.destroy))
+    ).then(() => destroyPg(pg))
   }
+}
+
+function destroyPg (pg) {
+  return new Promise((resolve, reject) => {
+    try {
+      pg.destroy().then(() => resolve())
+    } catch (e) {
+      reject(e)
+    }
+  })
 }
