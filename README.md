@@ -7,7 +7,7 @@ Because drunk people can create web apps too.
 
 Buhoi is an application server allowing you to write robust full-featured web-applications (with background tasks support) within tight timeframes.
 
-![logo](https://i0.wp.com/eduncovered.com/wp-content/uploads/2014/01/simpsons-bender-drunk.jpg)
+[![logo](./pxfuel.jpg)](https://www.pxfuel.com/en/desktop-wallpaper-xquxf)
 
 ## env
 
