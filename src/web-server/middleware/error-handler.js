@@ -22,6 +22,9 @@ module.exports = function errorHandler ({
       case error instanceof NotFoundError: return res.status(404).end()
       case error instanceof ProcedureTimeoutError: return res.status(408).end()
       default: {
+        if (error && error.type === 'request.aborted') {
+          return res.status(400).end()
+        }
         log.error('%s %s (session %s) failed due to', req.method, req.path, req.session, error)
         return res.status(500).end()
       }
