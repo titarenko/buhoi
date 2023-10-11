@@ -26,6 +26,8 @@ function createHandler ({
 
   resolveProcedure,
   getContext,
+  logCall,
+  logCallResult,
   maxInputSize,
 
   NotAuthenticatedError,
@@ -86,7 +88,13 @@ function createHandler ({
           const args = getArgs(argsJson, ProtocolViolationError)
           const context = await cachedGetContext(session)
           try {
+            if (logCall) {
+              logCall({ context, feature, procedure, args })
+            }
             const result = await instance.body.call(context, ...args, req, res)
+            if (logCallResult) {
+              logCallResult({ context, feature, procedure, args, result })
+            }
             if (instance.cache) {
               cache.set(cachedResultKey, result, instance.cache)
             }
@@ -100,7 +108,13 @@ function createHandler ({
         const argsForm = await getArgsForm(req, maxInputSize)
         const context = await cachedGetContext(session)
         try {
+          if (logCall) {
+            logCall({ context, feature, procedure, args: argsForm })
+          }
           const result = await instance.body.call(context, argsForm, req, res)
+          if (logCallResult) {
+            logCallResult({ context, feature, procedure, args: argsForm, result })
+          }
           render(result, res)
         } catch (e) {
           handleError(e)
