@@ -11,7 +11,7 @@ module.exports = function webpackHotDevServer (webpackConfigPath) {
     const webpack = require('webpack')
     const webpackConfig = require(webpackConfigPath)
     const compiler = webpack(webpackConfig)
-    const instance = webpackDevMiddleware(compiler, { noInfo: true, lazy: false })
+    const instance = webpackDevMiddleware(compiler)
 
     router.use(instance)
     router.use(webpackHotMiddleware(compiler))
