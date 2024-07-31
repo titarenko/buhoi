@@ -1,16 +1,24 @@
 const assert = require('assert')
-const redis = require('redis')
-const Promise = require('bluebird')
+// const redis = require('redis')
+// const Promise = require('bluebird')
 
-Promise.promisifyAll(redis.RedisClient.prototype)
+const { createClient } = require('redis')
 
-module.exports = { initialize, terminate, set, get, createCachedFunction }
+// Promise.promisifyAll(redis.RedisClient.prototype)
+
+module.exports = {
+  initialize,
+  terminate,
+  set,
+  get,
+  createCachedFunction,
+}
 
 function initialize () {
   const { BUHOI_REDIS } = process.env
 
   if (BUHOI_REDIS) {
-    module.exports.client = redis.createClient(BUHOI_REDIS)
+    module.exports.client = createClient(BUHOI_REDIS)
   }
 
   return module.exports
