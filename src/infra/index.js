@@ -5,7 +5,6 @@ const pg = require('./pg')
 const mq = require('./mq')
 const cache = require('./cache')
 const webpack = require('./webpack')
-const request = require('./request')
 
 module.exports = { initialize, terminate, v: korrekt, webpack }
 
@@ -14,7 +13,6 @@ function initialize () {
   module.exports.pg = pg.initialize()
   module.exports.mq = mq.initialize()
   module.exports.cache = cache.initialize()
-  module.exports.request = request
 }
 
 async function terminate () {
