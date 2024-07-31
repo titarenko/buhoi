@@ -1,10 +1,5 @@
 const assert = require('assert')
-// const redis = require('redis')
-// const Promise = require('bluebird')
-
 const { createClient } = require('redis')
-
-// Promise.promisifyAll(redis.RedisClient.prototype)
 
 module.exports = {
   initialize,
@@ -26,7 +21,7 @@ function initialize () {
 
 function terminate (instance) {
   if (instance && instance.client) {
-    return instance.client.quit()
+    return instance.client.disconnect()
   }
 }
 
@@ -35,7 +30,12 @@ function set (key, value, ttl) {
   if (!client) {
     return
   }
-  return client.setAsync(key, JSON.stringify(value), 'EX', Math.ceil(ttl / 1000))
+
+  if (value) {
+    return client.set(key, JSON.stringify(value), { 'EX': Math.ceil(ttl / 1000) })
+  } else {
+    return client.del(key)
+  }
 }
 
 async function get (key) {
@@ -48,7 +48,7 @@ async function get (key) {
     return
   }
 
-  const value = await client.getAsync(key)
+  const value = await client.get(key)
 
   if (value === null) {
     return

@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 const Promise = require('bluebird')
-const request = Promise.promisify(require('request'))
+const request = Promise.promisify(require('request')) // todo: use axios here and in other tests
 
 describe('buhoi caching', function () {
   before(function () {

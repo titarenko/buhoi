@@ -7,7 +7,7 @@ const todos = require('./app/features/todos')
 
 describe('buhoi visibility', function () {
   beforeEach(() => {
-    todos.publicProcedureSpy.reset()
+    todos.publicProcedureSpy.resetHistory()
   })
 
   it('should serve public procedures', async function () {

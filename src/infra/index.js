@@ -6,13 +6,25 @@ const mq = require('./mq')
 const cache = require('./cache')
 const webpack = require('./webpack')
 
-module.exports = { initialize, terminate, v: korrekt, webpack }
+module.exports = {
+  initialize,
+  onStart,
+  terminate,
+  v: korrekt,
+  webpack,
+}
 
 function initialize () {
   module.exports.log = module.exports.mklog = log.initialize()
   module.exports.pg = pg.initialize()
   module.exports.mq = mq.initialize()
   module.exports.cache = cache.initialize()
+}
+
+async function onStart () {
+  if (cache.client) {
+    await cache.client.connect()
+  }
 }
 
 async function terminate () {

@@ -12,6 +12,7 @@ infra.initialize()
 module.exports = new Proxy({ config, start, stop }, { get })
 
 async function start (options) {
+  await infra.onStart()
   webServer.start(options)
   taskServer.start(options)
 }
