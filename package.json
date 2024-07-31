@@ -11,7 +11,7 @@
   "author": "Constantin Titarenko <constantin.titarenko@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=12"
+    "node": ">=18"
   },
   "dependencies": {
     "bluebird": "^3.7.2",
@@ -34,15 +34,15 @@
     "node-schedule": "^1.3.3",
     "pg": "^8.10.0",
     "raw-body": "^2.5.2",
-    "redis": "^2.8.0",
+    "redis": "^4.7.0",
     "request": "^2.88.1",
     "totlog": "^2.1.1",
-    "webpack": "^3.12.0"
+    "webpack": "^5.93.0"
   },
   "devDependencies": {
-    "@titarenko/eslint-config": "^1.0.3",
+    "@titarenko/eslint-config": "^2.0.0",
     "coveralls": "^3.0.0",
-    "eslint": "^4.14.0",
+    "eslint": "^9.8.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "mocha": "^10.2.0",
@@ -50,8 +50,8 @@
     "should": "^13.2.0",
     "should-sinon": "0.0.6",
     "sinon": "4.1.3",
-    "webpack-dev-middleware": "2.0.3",
-    "webpack-hot-middleware": "2.21.0"
+    "webpack-dev-middleware": "^7.3.0",
+    "webpack-hot-middleware": "^2.26.1"
   },
   "scripts": {
     "precommit": "lint-staged",
