@@ -36,7 +36,7 @@ let baseUrl = ''
 export const bridge = new Proxy({ }, {
   get (target, feature) {
     return createProcedureProxy(
-      feature.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+      feature.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
     )
   },
 })

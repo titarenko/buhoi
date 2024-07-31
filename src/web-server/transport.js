@@ -1,4 +1,4 @@
-const constants = require('constants')
+const { constants } = require('crypto')
 const fs = require('fs')
 const http = require('http')
 const https = require('https')
@@ -18,8 +18,8 @@ function dispose (transport) {
   if (transport.redirector) {
     return new Promise(
       resolve => transport.redirector.shutdown(
-        () => transport.carrier.shutdown(resolve)
-      )
+        () => transport.carrier.shutdown(resolve),
+      ),
     )
   } else {
     return new Promise(resolve => transport.carrier.shutdown(resolve))

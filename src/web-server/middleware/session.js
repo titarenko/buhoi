@@ -18,7 +18,7 @@ module.exports = function session ({ cookieName = 'doge', sameSite } = { }) {
 
   const getSessionFromCookie = memoizee(
     cookieHeaderValue => cookieHeaderValue && cookie.parse(cookieHeaderValue)[cookieName],
-    { primitive: true }
+    { primitive: true },
   )
 
   return function sessionMiddleware (req, res, next) {

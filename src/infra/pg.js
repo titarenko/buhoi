@@ -44,7 +44,7 @@ function terminate (pg) {
   if (pg) {
     return new Promise(pg.ro
       ? destroyPg(pg.ro)
-      : r => r()
+      : r => r(),
     ).then(() => destroyPg(pg))
   }
 }

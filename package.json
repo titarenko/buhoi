@@ -40,6 +40,9 @@
     "webpack": "^5.93.0"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.1.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.8.0",
     "@titarenko/eslint-config": "^2.0.0",
     "coveralls": "^3.0.0",
     "eslint": "^9.8.0",
@@ -56,7 +59,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "prepush": "npm t",
-    "lint": "eslint . --ext .js --ignore-path .gitignore",
+    "lint": "eslint .",
     "test": "npm run lint && mocha -r should --recursive tests",
     "cover": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=html && xdg-open coverage/index.html",
     "travis-coveralls": "npm run lint && nyc mocha -r should --recursive tests && nyc report --reporter=text-lcov | coveralls",
