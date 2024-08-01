@@ -1,7 +1,5 @@
 /* eslint-env browser */
 
-import querystring from 'querystring'
-
 class HttpError extends Error {
   constructor ({ statusCode }) {
     super(statusCode)
@@ -65,7 +63,7 @@ export function interceptError (fn) {
 
 export function getFullUrl (procedure, ...args) {
   const qs = { args: encodeURIComponent(JSON.stringify(args)) }
-  return `${baseUrl}/rpc/${procedure}?${querystring.stringify(qs)}`
+  return `${baseUrl}/rpc/${procedure}?${new URLSearchParams(qs).toString()}`
 }
 
 export function get (procedure, ...args) {
@@ -157,7 +155,7 @@ function request ({ method = 'GET', url, headers = { }, qs, json, form }) {
       }
     }
 
-    instance.open(method, qs ? `${url}?${querystring.stringify(qs)}` : url)
+    instance.open(method, qs ? `${url}?${new URLSearchParams(qs).toString()}` : url)
     instance.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
     Object.entries(headers).map(pair => instance.setRequestHeader(...pair))
 
