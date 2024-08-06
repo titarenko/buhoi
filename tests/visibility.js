@@ -28,7 +28,7 @@ describe('buhoi visibility', function () {
     const { statusCode, body } = await request({
       url: 'https://localhost:3001/rpc/todos.privateProcedure',
       method: 'POST',
-      json: [{ 'undefined': 'null' }],
+      json: [{ undefined: 'null' }],
       strictSSL: false,
       timeout: 1000,
     })

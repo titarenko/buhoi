@@ -26,7 +26,7 @@ async function stop () {
 }
 
 function get (target, name) {
-  return target[name] ||
-    infraPublics.includes(name) && infra[name] ||
-    resultsPublics.includes(name) && results[name]
+  return target[name]
+    || (infraPublics.includes(name) && infra[name])
+    || (resultsPublics.includes(name) && results[name])
 }

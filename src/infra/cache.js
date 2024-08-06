@@ -32,7 +32,7 @@ function set (key, value, ttl) {
   }
 
   if (value) {
-    return client.set(key, JSON.stringify(value), { 'EX': Math.ceil(ttl / 1000) })
+    return client.set(key, JSON.stringify(value), { EX: Math.ceil(ttl / 1000) })
   } else {
     return client.del(key)
   }

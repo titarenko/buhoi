@@ -22,7 +22,7 @@ describe('buhoi authorization', function () {
   it('should allow authorized access', async function () {
     const { statusCode, body } = await request({
       url: 'https://localhost:3001/rpc/secrets.getSecret',
-      headers: { 'Cookie': 'doge=dodo' },
+      headers: { Cookie: 'doge=dodo' },
       method: 'GET',
       json: true,
       strictSSL: false,

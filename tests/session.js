@@ -21,7 +21,7 @@ describe('buhoi session', function () {
     const { statusCode, body, headers } = await request({
       url: 'https://localhost:3001/rpc/users.logout',
       method: 'POST',
-      headers: { 'Cookie': 'doge=dodo' },
+      headers: { Cookie: 'doge=dodo' },
       json: [],
       strictSSL: false,
       timeout: 1000,

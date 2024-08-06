@@ -1,30 +1,38 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { includeIgnoreFile } from '@eslint/compat'
-// import js from '@eslint/js'
-// import { FlatCompat } from '@eslint/eslintrc'
+
+import stylistic from '@stylistic/eslint-plugin'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const gitignorePath = path.resolve(__dirname, '.gitignore')
 
-
-// const compat = new FlatCompat({
-//   baseDirectory: __dirname,
-//   recommendedConfig: js.configs.recommended,
-//   allConfig: js.configs.all,
-// })
-
+// noinspection JSUnusedGlobalSymbols
 export default [
-  /*...compat.extends('standard', 'plugin:require-path-exists/recommended'),*/
+  stylistic.configs['recommended-flat'],
   includeIgnoreFile(gitignorePath),
   {
+    plugins: {
+      '@stylistic': stylistic,
+      'unused-imports': unusedImports,
+    },
     rules: {
-      'comma-dangle': ['error', 'always-multiline'],
-      // 'no-mixed-operators': ['off'],
-      // 'no-return-assign': ['off'],
-      curly: ['error', 'all'],
-      'brace-style': ['error', '1tbs'],
+      '@stylistic/space-before-function-paren': ['error', 'always'],
+      '@stylistic/arrow-parens': ['off', 'as-needed'],
+      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+      '@stylistic/brace-style': ['error', '1tbs'],
+
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'none',
+        },
+      ],
     },
   },
 ]

@@ -7,7 +7,7 @@ describe('buhoi files', function () {
   it('should allow to send files', async function () {
     const { statusCode, body, headers } = await request({
       url: 'https://localhost:3001/rpc/secrets.getSecretFile',
-      headers: { 'Cookie': 'doge=dodo' },
+      headers: { Cookie: 'doge=dodo' },
       method: 'GET',
       json: true,
       strictSSL: false,

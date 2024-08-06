@@ -166,7 +166,7 @@ function getArgsForm (req, maxInputSize) {
 function getContentType (req) {
   try {
     return contentType.parse(req).type
-  } catch (e) {
+  } catch (e) { // eslint-disable-line unused-imports/no-unused-vars
     return 'application/json'
   }
 }
@@ -174,7 +174,7 @@ function getContentType (req) {
 function getEncoding (req, defaultEncoding = 'utf-8') {
   try {
     return contentType.parse(req).parameters.charset || defaultEncoding
-  } catch (e) {
+  } catch (e) { // eslint-disable-line unused-imports/no-unused-vars
     return defaultEncoding
   }
 }

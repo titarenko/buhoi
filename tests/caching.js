@@ -30,7 +30,7 @@ describe('buhoi caching', function () {
     const get = session => request({
       url: 'https://localhost:3001/rpc/todos.cachedPublicProcedure',
       method: 'GET',
-      headers: { 'Cookie': `doge=${session}` },
+      headers: { Cookie: `doge=${session}` },
       json: [],
       strictSSL: false,
       timeout: 1000,

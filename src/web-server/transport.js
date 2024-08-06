@@ -62,7 +62,7 @@ function createHttpTransport (app) {
 
 function createRedirector () {
   return httpShutdown(http.createServer((req, res) => {
-    res.writeHead(301, { 'Location': `https://${req.headers['host']}${req.url}` })
+    res.writeHead(301, { Location: `https://${req.headers['host']}${req.url}` })
     res.end()
   }))
 }
