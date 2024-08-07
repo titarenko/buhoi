@@ -41,6 +41,7 @@
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
     "@stylistic/eslint-plugin": "^2.6.1",
+    "axios": "^1.7.3",
     "coveralls": "^3.1.1",
     "eslint": "^9.8.0",
     "eslint-plugin-unused-imports": "^4.0.1",

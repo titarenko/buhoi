@@ -1,17 +1,14 @@
 /* eslint-env mocha */
 
-const Promise = require('bluebird')
-const request = Promise.promisify(require('request'))
+const request = require('./request')
 
 describe('buhoi letsencrypt webroot', function () {
   it('should serve letsencrypt webroot', async function () {
-    const { statusCode, body } = await request({
+    const { status, data } = await request({
       url: 'https://localhost:3001/.well-known/acme-challenge/index.html',
-      method: 'GET',
-      strictSSL: false,
-      timeout: 1000,
+      method: 'get',
     })
-    statusCode.should.eql(200)
-    body.should.eql('myindex')
+    status.should.eql(200)
+    data.should.eql('myindex')
   })
 })
