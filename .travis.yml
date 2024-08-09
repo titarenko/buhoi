@@ -1,3 +1,4 @@
+dist: noble
 language: node_js
 services:
   - redis-server
