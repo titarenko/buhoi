@@ -9,7 +9,7 @@ const users = require('./app/features/users')
 
 describe('buhoi arg parsing', function () {
   beforeEach(() => {
-    todos.publicProcedureSpy.reset()
+    todos.publicProcedureSpy.resetHistory()
   })
 
   it('should treat no content as empty arg array', async function () {

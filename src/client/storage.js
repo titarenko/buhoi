@@ -6,7 +6,7 @@ export function get (key, defaultValue) {
   try {
     const value = JSON.parse(localStorage[key])
     return value === undefined ? defaultValue : value
-  } catch (error) {
+  } catch (error) { // eslint-disable-line unused-imports/no-unused-vars
     return defaultValue
   }
 }

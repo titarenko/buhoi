@@ -1,35 +1,32 @@
 /* eslint-env mocha */
 
-const Promise = require('bluebird')
-const request = Promise.promisify(require('request'))
-
 const secrets = require('./app/features/secrets')
+const request = require('./request')
 
 describe('buhoi authorization', function () {
   it('should deny unauthorized access', async function () {
-    const { statusCode, body } = await request({
+    const { status, data } = await request({
       url: 'https://localhost:3001/rpc/secrets.getSecret',
-      method: 'GET',
-      json: true,
-      strictSSL: false,
-      timeout: 1000,
+      method: 'get',
     })
+
     secrets.getSecretSpy.calledOnce.should.eql(false)
-    statusCode.should.eql(401)
-    true.should.eql(body === undefined)
+    status.should.eql(401)
+    data.should.eql('')
   })
 
   it('should allow authorized access', async function () {
-    const { statusCode, body } = await request({
+    const { status, data } = await request({
       url: 'https://localhost:3001/rpc/secrets.getSecret',
-      headers: { 'Cookie': 'doge=dodo' },
-      method: 'GET',
-      json: true,
-      strictSSL: false,
-      timeout: 1000,
+      method: 'get',
+      headers: {
+        'Cookie': 'doge=dodo',
+        'Content-Type': 'application/json',
+      },
     })
+
     secrets.getSecretSpy.calledOnce.should.eql(true)
-    statusCode.should.eql(200)
-    body.should.eql('secret! shh!')
+    status.should.eql(200)
+    data.should.eql('secret! shh!')
   })
 })

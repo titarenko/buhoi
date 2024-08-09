@@ -133,7 +133,7 @@ function getArgsJson (req, maxInputSize) {
 function getArgsForm (req, maxInputSize) {
   const maxBytes = bytes(maxInputSize)
   return new Promise((resolve, reject) => {
-    const busboy = new Busboy({ headers: req.headers })
+    const busboy = Busboy({ headers: req.headers })
     const form = { }
 
     busboy.on('file', function (field, stream, name, encoding, mimetype) {
@@ -166,7 +166,7 @@ function getArgsForm (req, maxInputSize) {
 function getContentType (req) {
   try {
     return contentType.parse(req).type
-  } catch (e) {
+  } catch (e) { // eslint-disable-line unused-imports/no-unused-vars
     return 'application/json'
   }
 }
@@ -174,7 +174,7 @@ function getContentType (req) {
 function getEncoding (req, defaultEncoding = 'utf-8') {
   try {
     return contentType.parse(req).parameters.charset || defaultEncoding
-  } catch (e) {
+  } catch (e) { // eslint-disable-line unused-imports/no-unused-vars
     return defaultEncoding
   }
 }

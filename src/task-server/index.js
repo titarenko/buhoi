@@ -1,5 +1,5 @@
 const assert = require('assert')
-const glob = require('glob')
+const { globSync } = require('glob')
 const { scheduleJob } = require('node-schedule')
 
 module.exports = { start, stop }
@@ -14,7 +14,7 @@ function start ({ featuresPath } = { }) {
 
   const MessageHandlerFailureError = require('../infra/mq').MessageHandlerFailureError
 
-  const tasks = glob.sync('**/tasks/*.js', { cwd: featuresPath }).map(path => ({
+  const tasks = globSync('**/tasks/*.js', { cwd: featuresPath }).map(path => ({
     name: path
       .replace('/tasks', '')
       .replace('/', ':')
@@ -47,7 +47,7 @@ function start ({ featuresPath } = { }) {
 
   mq.consumeJob('schedule', () => new Promise((resolve, reject) => {
     tasks.forEach(({ name, instance: { schedule } }) =>
-      schedule && scheduleJob(schedule, () => mq.publishJob(name))
+      schedule && scheduleJob(schedule, () => mq.publishJob(name)),
     )
   }))
 }
