@@ -1,4 +1,4 @@
-dist: noble
+dist: jammy
 language: node_js
 services:
   - redis-server
